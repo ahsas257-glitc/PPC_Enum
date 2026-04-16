@@ -1,0 +1,533 @@
+/* ==========================================================================
+   SIDEBAR FOUNDATION
+   ========================================================================== */
+
+[data-testid="stSidebarNav"] {
+    display: none;
+}
+
+[data-testid="stSidebar"] {
+    overflow: hidden !important;
+}
+
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+    body.sidebar-hover-enabled [data-testid="stSidebar"] {
+        --sidebar-hover-width: 18.25rem;
+        --sidebar-hover-peek: 1.22rem;
+        --sidebar-hover-speed: 165ms;
+        --sidebar-hover-ease: cubic-bezier(0.18, 0.9, 0.22, 1);
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        z-index: 120 !important;
+        width: var(--sidebar-hover-width) !important;
+        min-width: var(--sidebar-hover-width) !important;
+        max-width: var(--sidebar-hover-width) !important;
+        transform: translate3d(calc(-100% + var(--sidebar-hover-peek)), 0, 0) !important;
+        transition:
+            transform var(--sidebar-hover-speed) var(--sidebar-hover-ease),
+            box-shadow var(--sidebar-hover-speed) var(--sidebar-hover-ease),
+            background 140ms ease-out !important;
+        box-shadow:
+            10px 0 30px rgba(1, 7, 16, 0.10),
+            inset -1px 0 0 rgba(255,255,255,0.02) !important;
+        will-change: transform;
+        backface-visibility: hidden;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"]::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 0.2rem;
+        width: 0.38rem;
+        height: 4.9rem;
+        transform: translateY(-50%);
+        border-radius: 999px;
+        background: linear-gradient(
+            180deg,
+            rgba(196, 244, 255, 0.95),
+            rgba(121, 220, 255, 0.82) 28%,
+            rgba(106, 168, 255, 0.34)
+        );
+        box-shadow:
+            0 0 0 4px rgba(121, 220, 255, 0.08),
+            0 0 24px rgba(121, 220, 255, 0.22);
+        opacity: 0.96;
+        pointer-events: none;
+        transition:
+            opacity var(--sidebar-hover-speed) var(--sidebar-hover-ease),
+            box-shadow var(--sidebar-hover-speed) var(--sidebar-hover-ease),
+            transform var(--sidebar-hover-speed) var(--sidebar-hover-ease) !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"] > div:first-child {
+        min-height: 100vh !important;
+        transform: translate3d(0.38rem, 0, 0) scale(0.988);
+        transform-origin: left center;
+        opacity: 0.94;
+        transition:
+            transform var(--sidebar-hover-speed) var(--sidebar-hover-ease),
+            opacity 130ms ease-out !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:hover,
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:focus-within {
+        transform: translateX(0) !important;
+        box-shadow:
+            16px 0 42px rgba(1, 7, 16, 0.22),
+            inset -1px 0 0 rgba(255,255,255,0.03) !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:hover::before,
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:focus-within::before {
+        opacity: 0.34;
+        transform: translateY(-50%) scaleY(0.92);
+        box-shadow:
+            0 0 0 5px rgba(121, 220, 255, 0.06),
+            0 0 28px rgba(121, 220, 255, 0.18);
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:hover > div:first-child,
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:focus-within > div:first-child {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 1;
+    }
+
+    body.sidebar-hover-enabled [data-testid="collapsedControl"],
+    body.sidebar-hover-enabled [data-testid="stSidebarCollapseButton"],
+    body.sidebar-hover-enabled button[title="Open sidebar"],
+    body.sidebar-hover-enabled button[title="Close sidebar"],
+    body.sidebar-hover-enabled button[aria-label="Open sidebar"],
+    body.sidebar-hover-enabled button[aria-label="Close sidebar"] {
+        display: none !important;
+    }
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    max-height: 100vh !important;
+    overflow-y: hidden !important;
+    padding: 0.12rem 0.85rem 0.96rem !important;
+    box-sizing: border-box !important;
+}
+
+[data-testid="stSidebarUserContent"] {
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-top: -0.14rem !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    gap: 0.54rem !important;
+}
+
+[data-testid="stSidebar"] .block-container,
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+[data-testid="stSidebar"] [data-testid="element-container"],
+[data-testid="stSidebar"] .stElementContainer {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span {
+    color: var(--text) !important;
+}
+
+/* ==========================================================================
+   BRAND CARD
+   ========================================================================== */
+
+.sidebar-brand-card {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin: -0.12rem 0 0.14rem 0 !important;
+    padding: 0.64rem 0.66rem 0.62rem !important;
+    border-radius: 18px;
+    text-align: center;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(151, 192, 230, 0.14);
+    background:
+        linear-gradient(145deg, rgba(18, 30, 47, 0.84), rgba(8, 14, 24, 0.88)),
+        rgba(8, 13, 22, 0.88);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 -1px 0 rgba(255,255,255,0.015),
+        0 18px 42px rgba(1, 8, 18, 0.18);
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+
+.sidebar-brand-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(120deg, rgba(255,255,255,0.08), transparent 34%, rgba(121, 220, 255, 0.05) 64%, transparent 100%),
+        radial-gradient(circle at top right, rgba(106, 168, 255, 0.10), transparent 28%);
+    opacity: 0.9;
+}
+
+.sidebar-brand-card::after {
+    content: "";
+    position: absolute;
+    inset: auto auto -22% -8%;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(121, 220, 255, 0.08), transparent 68%);
+    filter: blur(18px);
+    opacity: 0.7;
+}
+
+.sidebar-brand-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.sidebar-brand-eyebrow {
+    display: inline-flex;
+    position: relative;
+    isolation: isolate;
+    align-items: center;
+    justify-content: center;
+    gap: 0.24rem;
+    max-width: 100%;
+    padding: 0.14rem 0.3rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+    color: var(--accent);
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 0.045em;
+    line-height: 1;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.sidebar-brand-eyebrow::before {
+    content: "";
+    display: block;
+    width: 0.3rem;
+    height: 0.3rem;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 30% 28%, rgba(255,255,255,0.98) 0, rgba(255,255,255,0.94) 10%, rgba(135, 241, 227, 0.96) 24%, rgba(121, 220, 255, 0.88) 56%, rgba(106, 168, 255, 0.78) 78%, rgba(180, 207, 255, 0.34) 100%);
+    box-shadow:
+        0 0 0 4px rgba(121, 220, 255, 0.08),
+        0 0 14px rgba(121, 220, 255, 0.18),
+        0 0 24px rgba(135, 241, 227, 0.1);
+    animation:
+        luxuryOrbPulse 3.4s var(--ease-soft) infinite,
+        luxuryOrbFloat 6.6s var(--ease-soft) infinite;
+    will-change: transform, box-shadow, filter;
+}
+
+.sidebar-brand-card h2 {
+    margin: 0.52rem 0 0 !important;
+    color: var(--text);
+    font-size: 1.32rem !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.sidebar-brand-card p {
+    margin: 0.32rem 0 0.38rem !important;
+    color: var(--text-soft);
+    line-height: 1.28 !important;
+    font-size: 0.74rem !important;
+}
+
+.sidebar-role-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.22rem 0.52rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* ==========================================================================
+   SECTION LABEL
+   ========================================================================== */
+
+.sidebar-footer-label {
+    margin-top: 0.46rem;
+    margin-bottom: 0.18rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+/* ==========================================================================
+   SIDEBAR RADIO NAV WRAPPER
+   ========================================================================== */
+
+[data-testid="stSidebar"] [data-testid="stRadio"] {
+    width: 100% !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] > div {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.30rem !important;
+    width: 100% !important;
+}
+
+/* ==========================================================================
+   RADIO NAV ITEM
+   ========================================================================== */
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 38px !important;
+    margin: 0 !important;
+    padding: 0.34rem 0.50rem !important;
+    overflow: hidden !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(196, 230, 255, 0.16) !important;
+    background:
+        linear-gradient(145deg, rgba(18, 31, 49, 0.80), rgba(10, 19, 32, 0.78)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.028),
+        0 3px 8px rgba(1, 8, 18, 0.07);
+    transition:
+        transform var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        background var(--duration-fast) var(--ease-standard),
+        box-shadow var(--duration-fast) var(--ease-standard) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.54;
+    background:
+        linear-gradient(120deg, rgba(255,255,255,0.048), transparent 38%, rgba(121, 220, 255, 0.04) 74%, transparent 100%);
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label::after {
+    content: "";
+    position: absolute;
+    inset: auto auto -40% -12%;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(121, 220, 255, 0.055), transparent 70%);
+    filter: blur(14px);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-standard) !important;
+}
+
+/* hide native radio visuals */
+[data-testid="stSidebar"] [data-testid="stRadio"] label > div:first-child,
+[data-testid="stSidebar"] [data-testid="stRadio"] label [role="radio"],
+[data-testid="stSidebar"] [data-testid="stRadio"] label [data-baseweb="radio"],
+[data-testid="stSidebar"] [data-testid="stRadio"] label svg,
+[data-testid="stSidebar"] [data-testid="stRadio"] label input,
+[data-testid="stSidebar"] [data-testid="stRadio"] input {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label > div:last-child {
+    position: relative;
+    z-index: 1;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* text inside nav item */
+[data-testid="stSidebar"] [data-testid="stRadio"] label p {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    margin: 0 !important;
+    text-align: center !important;
+    color: var(--text) !important;
+    font-size: 0.70rem !important;
+    font-weight: 760 !important;
+    line-height: 1.12 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Hover */
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+    transform: none;
+    border-color: rgba(196, 230, 255, 0.34) !important;
+    background:
+        linear-gradient(145deg, rgba(20, 36, 57, 0.88), rgba(12, 22, 36, 0.84)) !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.018),
+        0 4px 10px rgba(2, 10, 24, 0.09);
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover::after {
+    opacity: 0.36;
+}
+
+/* Selected */
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
+    border-color: rgba(196, 230, 255, 0.48) !important;
+    background:
+        linear-gradient(145deg, rgba(28, 49, 73, 0.92), rgba(12, 26, 44, 0.9)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.045),
+        inset 0 0 0 1px rgba(125, 211, 252, 0.045),
+        0 5px 12px rgba(2, 10, 24, 0.12) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked)::after {
+    opacity: 0.48;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p {
+    color: #f7fbff !important;
+}
+
+/* Keyboard focus */
+[data-testid="stSidebar"] [data-testid="stRadio"] label:focus-within {
+    border-color: rgba(196, 230, 255, 0.58) !important;
+    box-shadow:
+        0 0 0 1px rgba(125, 211, 252, 0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.02) !important;
+}
+
+/* ==========================================================================
+   SIDEBAR BUTTONS
+   ========================================================================== */
+
+[data-testid="stSidebar"] .stButton,
+[data-testid="stSidebar"] .stDownloadButton {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] .stDownloadButton > button {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 34px !important;
+    padding: 0.38rem 0.62rem !important;
+    border-radius: 9px !important;
+    font-size: 0.72rem !important;
+    line-height: 1.05 !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .sidebar-brand-card {
+        border-radius: 16px !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        border-radius: 12px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-brand-card {
+        border-radius: 15px !important;
+    }
+
+    [data-testid="stSidebar"] > div:first-child {
+        padding: 0.2rem 0.72rem 0.9rem !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        min-height: 36px !important;
+        border-radius: 9px !important;
+        padding: 0.30rem 0.44rem !important;
+    }
+
+    [data-testid="stSidebar"] .stButton > button,
+    [data-testid="stSidebar"] .stDownloadButton > button {
+        min-height: 32px !important;
+        padding: 0.34rem 0.54rem !important;
+        border-radius: 8px !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar-brand-card,
+    .sidebar-brand-card::before,
+    .sidebar-brand-card::after,
+    .sidebar-brand-eyebrow::before,
+    [data-testid="stSidebar"] [data-testid="stRadio"] label,
+    [data-testid="stSidebar"] [data-testid="stRadio"] label::before,
+    [data-testid="stSidebar"] [data-testid="stRadio"] label::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+[data-testid="stSidebar"]::before,
+[data-testid="stSidebar"]::after,
+[data-testid="stSidebar"] .sidebar-brand-card::after,
+[data-testid="stSidebar"] [data-testid="stRadio"] label::after {
+    pointer-events: none !important;
+}
+
+[data-testid="stSidebar"] .sidebar-brand-card::after {
+    opacity: 0.42 !important;
+    transform: none !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label::after {
+    opacity: 0.34 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] > label[data-testid="stWidgetLabel"],
+[data-testid="stSidebar"] [data-testid="stRadio"] [data-testid="stWidgetLabel"] {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}

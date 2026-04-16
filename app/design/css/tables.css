@@ -1,0 +1,390 @@
+[class*="st-key-table_shell_"] {
+    position: relative !important;
+    z-index: 2 !important;
+    isolation: isolate !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-top: 0.42rem !important;
+    margin-bottom: 1.05rem !important;
+}
+
+[class*="st-key-table_shell_"] > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+[class*="st-key-table_frame_"] {
+    position: relative !important;
+    z-index: 2 !important;
+    isolation: isolate !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 0.3rem !important;
+}
+
+[class*="st-key-table_frame_"] > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+[class*="st-key-table_frame_"] [data-testid="stFullScreenFrame"]:not([style*="position: fixed"]) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+[class*="st-key-table_frame_"] [data-testid="stFullScreenFrame"]:not([style*="position: fixed"]) > * {
+    width: min(97%, 100%) !important;
+    max-width: 100% !important;
+    margin-inline: auto !important;
+}
+
+.table-shell-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 0.22rem;
+    padding: 0.08rem 0.12rem 0;
+}
+
+.table-shell-header__eyebrow {
+    color: rgba(223, 238, 251, 0.72);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.table-shell-header__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.42rem;
+    min-width: 0;
+}
+
+.table-shell-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 0.22rem 0.58rem;
+    border-radius: 999px;
+    border: 1px solid rgba(151, 192, 230, 0.12);
+    background:
+        linear-gradient(180deg, rgba(19, 33, 52, 0.88), rgba(10, 18, 30, 0.94)),
+        rgba(8, 13, 22, 0.88);
+    color: rgba(234, 244, 252, 0.88);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 10px 22px rgba(1, 8, 18, 0.14);
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   TABLE SHELL
+   ========================================================================== */
+
+[data-testid="stDataFrame"],
+[data-testid="stTable"],
+.stDataFrame {
+    position: relative;
+    z-index: 2 !important;
+    overflow: hidden;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin-top: 0;
+    padding: 0.42rem 0.5rem 0.46rem;
+    border-radius: 20px !important;
+    border: 1px solid var(--stroke) !important;
+    background:
+        linear-gradient(160deg, rgba(19, 31, 49, 0.9), rgba(9, 15, 25, 0.94)),
+        rgba(7, 12, 20, 0.88) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        inset 0 -1px 0 rgba(255,255,255,0.012),
+        0 22px 52px rgba(1, 8, 18, 0.22) !important;
+    isolation: isolate;
+}
+
+[class*="st-key-table_frame_"] [data-testid="stDataFrame"],
+[class*="st-key-table_frame_"] [data-testid="stTable"],
+[class*="st-key-table_frame_"] .stDataFrame {
+    width: min(97%, calc(100% - 0.35rem)) !important;
+    margin-inline: auto !important;
+}
+
+[data-testid="stDataFrame"]::before,
+[data-testid="stTable"]::before,
+.stDataFrame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+        linear-gradient(120deg, rgba(255,255,255,0.06), transparent 34%, rgba(121, 220, 255, 0.045) 62%, transparent 100%),
+        radial-gradient(circle at top right, rgba(106, 168, 255, 0.08), transparent 28%);
+    opacity: 0.9;
+    z-index: 0;
+}
+
+[data-testid="stDataFrame"] > *,
+[data-testid="stTable"] > *,
+.stDataFrame > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   TEXT / INNER COLOR NORMALIZATION
+   ========================================================================== */
+
+[data-testid="stDataFrame"] div,
+[data-testid="stTable"] div,
+[data-testid="stTable"] th,
+[data-testid="stTable"] td {
+    color: var(--text) !important;
+}
+
+/* ==========================================================================
+   INNER GRID / TABLE SURFACE
+   ========================================================================== */
+
+[data-testid="stDataFrame"] [role="grid"],
+[data-testid="stTable"] table {
+    width: 100%;
+    max-width: 100%;
+    min-width: var(--table-min-width, 720px) !important;
+    overflow: auto !important;
+    border-radius: 18px !important;
+    background:
+        linear-gradient(180deg, rgba(8, 17, 29, 0.92), rgba(7, 14, 24, 0.96)) !important;
+    border: 1px solid rgba(151, 192, 230, 0.09) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.03),
+        0 12px 28px rgba(1, 8, 18, 0.12) !important;
+}
+
+[data-testid="stDataFrame"] [data-testid="stDataFrameResizable"],
+[data-testid="stDataFrame"] div[data-testid="stDataFrameGlideDataEditor"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+[class*="st-key-table_frame_"] .stDataFrameGlideDataEditor {
+    transform: scale(0.985);
+    transform-origin: top center;
+}
+
+[class*="st-key-table_frame_"] .gdg-search-bar {
+    top: 0.18rem !important;
+    right: 0.18rem !important;
+    max-width: 16rem !important;
+    padding: 0.22rem 0.28rem !important;
+    border-radius: 10px !important;
+    transform: scale(0.94);
+    transform-origin: top right;
+    z-index: 4 !important;
+}
+
+[class*="st-key-table_frame_"] .gdg-search-bar button {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+[class*="st-key-table_frame_"] [data-testid="stElementToolbar"] {
+    top: 0.14rem !important;
+    right: 0.16rem !important;
+    z-index: 4 !important;
+}
+
+[class*="st-key-table_frame_"] [data-testid="stElementToolbar"] button {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+[data-testid="stDataFrame"] [role="columnheader"],
+[data-testid="stTable"] thead tr th {
+    position: relative;
+    background:
+        linear-gradient(180deg, rgba(14, 26, 42, 0.98), rgba(11, 21, 35, 0.96)) !important;
+    color: var(--text) !important;
+    font-size: 0.76rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(151, 192, 230, 0.10) !important;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02);
+}
+
+[data-testid="stDataFrame"] [role="columnheader"]::after,
+[data-testid="stTable"] thead tr th::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(121, 220, 255, 0.12), transparent);
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   BODY CELLS
+   ========================================================================== */
+
+[data-testid="stDataFrame"] [role="gridcell"],
+[data-testid="stTable"] tbody tr td {
+    color: var(--text-soft) !important;
+    background: transparent !important;
+    border-color: rgba(151, 192, 230, 0.07) !important;
+    font-size: 0.88rem !important;
+    line-height: 1.42 !important;
+}
+
+/* ==========================================================================
+   ROW STATES
+   ========================================================================== */
+
+[data-testid="stDataFrame"] [role="row"],
+[data-testid="stTable"] tbody tr {
+    transition:
+        background var(--duration-fast) var(--ease-standard),
+        box-shadow var(--duration-fast) var(--ease-standard) !important;
+}
+
+[data-testid="stDataFrame"] [role="row"]:hover,
+[data-testid="stTable"] tbody tr:hover {
+    background: rgba(121, 220, 255, 0.05) !important;
+}
+
+[data-testid="stTable"] tbody tr:nth-child(even) td {
+    background: rgba(255,255,255,0.012) !important;
+}
+
+[data-testid="stTable"] tbody tr:hover td {
+    background: rgba(121, 220, 255, 0.04) !important;
+}
+
+/* ==========================================================================
+   STRONGER VISUAL SEPARATION FOR LAST COLUMN / EDGES
+   ========================================================================== */
+
+[data-testid="stTable"] table th:first-child,
+[data-testid="stTable"] table td:first-child {
+    padding-left: 1rem !important;
+}
+
+[data-testid="stTable"] table th:last-child,
+[data-testid="stTable"] table td:last-child {
+    padding-right: 1rem !important;
+}
+
+/* ==========================================================================
+   SCROLL AREA POLISH
+   ========================================================================== */
+
+[data-testid="stDataFrame"] [role="grid"] {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(121, 220, 255, 0.22) transparent;
+}
+
+[data-testid="stDataFrame"] [role="grid"]::-webkit-scrollbar,
+[data-testid="stTable"]::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-testid="stDataFrame"] [role="grid"]::-webkit-scrollbar-track,
+[data-testid="stTable"]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+[data-testid="stDataFrame"] [role="grid"]::-webkit-scrollbar-thumb,
+[data-testid="stTable"]::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: linear-gradient(
+        180deg,
+        rgba(121, 220, 255, 0.26),
+        rgba(106, 168, 255, 0.18)
+    );
+    background-clip: padding-box;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    [class*="st-key-table_shell_"] {
+        margin-top: 0.34rem !important;
+        margin-bottom: 0.9rem !important;
+    }
+
+    .table-shell-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.48rem;
+        margin-bottom: 0.32rem;
+    }
+
+    .table-shell-header__meta {
+        justify-content: flex-start;
+    }
+
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"],
+    .stDataFrame {
+        margin-top: 0;
+        padding: 0.4rem 0.42rem 0.42rem;
+        border-radius: 16px !important;
+    }
+
+    [data-testid="stDataFrame"] [role="grid"],
+    [data-testid="stTable"] table {
+        border-radius: 14px !important;
+    }
+
+    [data-testid="stDataFrame"] [role="columnheader"],
+    [data-testid="stTable"] thead tr th {
+        font-size: 0.72rem !important;
+    }
+
+    [data-testid="stDataFrame"] [role="gridcell"],
+    [data-testid="stTable"] tbody tr td {
+        font-size: 0.84rem !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-testid="stDataFrame"] [role="row"],
+    [data-testid="stTable"] tbody tr {
+        transition: none !important;
+    }
+}

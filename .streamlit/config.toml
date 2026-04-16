@@ -1,0 +1,16 @@
+[theme]
+base = "dark"
+primaryColor = "#7de8ff"
+backgroundColor = "#03070d"
+secondaryBackgroundColor = "#0a111c"
+textColor = "#f5fbff"
+
+[client]
+showErrorDetails = "none"
+
+[runner]
+fastReruns = true
+magicEnabled = false
+
+[server]
+fileWatcherType = "none"

@@ -1,0 +1,353 @@
+/* ==========================================================================
+   BUTTON SYSTEM — Premium / Modern / Unified
+   ========================================================================== */
+
+.stButton > button,
+.stDownloadButton > button,
+div[data-testid="stFormSubmitButton"] button {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+    min-height: 50px !important;
+    padding: 0.78rem 1.08rem !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--stroke) !important;
+    background:
+        linear-gradient(180deg, rgba(18, 29, 45, 0.96), rgba(11, 18, 30, 0.98)) !important;
+    color: var(--text) !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.01em !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -1px 0 rgba(255,255,255,0.015),
+        0 10px 24px rgba(2, 8, 18, 0.18),
+        0 1px 0 rgba(255,255,255,0.02) !important;
+
+    transition:
+        transform var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        background var(--duration-fast) var(--ease-standard),
+        color var(--duration-fast) var(--ease-standard),
+        box-shadow var(--duration-fast) var(--ease-standard),
+        opacity var(--duration-fast) var(--ease-standard) !important;
+}
+
+.stButton > button::before,
+.stDownloadButton > button::before,
+div[data-testid="stFormSubmitButton"] button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 1;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.01) 38%, transparent 72%),
+        radial-gradient(circle at top center, rgba(255,255,255,0.06), transparent 42%);
+    transition:
+        opacity var(--duration-fast) var(--ease-standard),
+        transform var(--duration-fast) var(--ease-standard) !important;
+}
+
+.stButton > button::after,
+.stDownloadButton > button::after,
+div[data-testid="stFormSubmitButton"] button::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    background:
+        linear-gradient(135deg, rgba(121, 220, 255, 0.2), transparent 35%, transparent 70%, rgba(135, 241, 227, 0.12));
+    transition:
+        opacity var(--duration-fast) var(--ease-standard) !important;
+}
+
+.stButton > button > *,
+.stDownloadButton > button > *,
+div[data-testid="stFormSubmitButton"] button > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   SECONDARY / DEFAULT
+   ========================================================================== */
+
+.stButton > button[kind="secondary"],
+.stDownloadButton > button[kind="secondary"],
+div[data-testid="stFormSubmitButton"] button[kind="secondary"],
+.stButton > button:not([kind]),
+.stDownloadButton > button:not([kind]),
+div[data-testid="stFormSubmitButton"] button:not([kind]) {
+    border-color: var(--stroke) !important;
+    background:
+        linear-gradient(180deg, rgba(18, 29, 45, 0.96), rgba(11, 18, 30, 0.98)) !important;
+    color: var(--text) !important;
+}
+
+/* ==========================================================================
+   PRIMARY
+   ========================================================================== */
+
+.stButton > button[kind="primary"],
+.stDownloadButton > button[kind="primary"],
+div[data-testid="stFormSubmitButton"] button[kind="primary"] {
+    border-color: rgba(200, 236, 255, 0.78) !important;
+    background:
+        linear-gradient(180deg, #a7e4ff 0%, #76c2ff 48%, #5aa8ff 100%) !important;
+    color: #04111d !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.5),
+        inset 0 -1px 0 rgba(44, 112, 180, 0.18),
+        0 16px 34px rgba(28, 99, 181, 0.24),
+        0 2px 0 rgba(255,255,255,0.08) !important;
+}
+
+.stButton > button[kind="primary"]::before,
+.stDownloadButton > button[kind="primary"]::before,
+div[data-testid="stFormSubmitButton"] button[kind="primary"]::before {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.06) 42%, transparent 72%),
+        radial-gradient(circle at top center, rgba(255,255,255,0.26), transparent 46%);
+}
+
+.stButton > button[kind="primary"]::after,
+.stDownloadButton > button[kind="primary"]::after,
+div[data-testid="stFormSubmitButton"] button[kind="primary"]::after {
+    opacity: 0.65;
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.22), transparent 36%, transparent 72%, rgba(122, 220, 255, 0.12));
+}
+
+/* ==========================================================================
+   TERTIARY / GHOST
+   ========================================================================== */
+
+.stButton > button[kind="tertiary"],
+.stDownloadButton > button[kind="tertiary"],
+div[data-testid="stFormSubmitButton"] button[kind="tertiary"] {
+    border-color: transparent !important;
+    background: rgba(255,255,255,0.02) !important;
+    color: var(--text-soft) !important;
+    box-shadow: none !important;
+}
+
+.stButton > button[kind="tertiary"]::before,
+.stDownloadButton > button[kind="tertiary"]::before,
+div[data-testid="stFormSubmitButton"] button[kind="tertiary"]::before {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.025), transparent 55%);
+}
+
+.stButton > button[kind="tertiary"]::after,
+.stDownloadButton > button[kind="tertiary"]::after,
+div[data-testid="stFormSubmitButton"] button[kind="tertiary"]::after {
+    display: none !important;
+}
+
+/* ==========================================================================
+   HOVER
+   ========================================================================== */
+
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+div[data-testid="stFormSubmitButton"] button:hover {
+    transform: translateY(-1px) !important;
+    border-color: rgba(151, 192, 230, 0.28) !important;
+    background:
+        linear-gradient(180deg, rgba(21, 33, 50, 0.98), rgba(12, 20, 33, 1)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        inset 0 -1px 0 rgba(255,255,255,0.02),
+        0 16px 30px rgba(2, 8, 18, 0.22),
+        0 1px 0 rgba(255,255,255,0.03) !important;
+}
+
+.stButton > button:hover::before,
+.stDownloadButton > button:hover::before,
+div[data-testid="stFormSubmitButton"] button:hover::before {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.stButton > button:hover::after,
+.stDownloadButton > button:hover::after,
+div[data-testid="stFormSubmitButton"] button:hover::after {
+    opacity: 1;
+}
+
+/* Primary hover */
+.stButton > button[kind="primary"]:hover,
+.stDownloadButton > button[kind="primary"]:hover,
+div[data-testid="stFormSubmitButton"] button[kind="primary"]:hover {
+    border-color: rgba(228, 245, 255, 0.96) !important;
+    background:
+        linear-gradient(180deg, #b3e9ff 0%, #84cbff 48%, #63b0ff 100%) !important;
+    color: #04111d !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.58),
+        inset 0 -1px 0 rgba(44, 112, 180, 0.16),
+        0 20px 38px rgba(29, 98, 178, 0.3),
+        0 2px 0 rgba(255,255,255,0.1) !important;
+}
+
+/* Tertiary hover */
+.stButton > button[kind="tertiary"]:hover,
+.stDownloadButton > button[kind="tertiary"]:hover,
+div[data-testid="stFormSubmitButton"] button[kind="tertiary"]:hover {
+    background: rgba(255,255,255,0.045) !important;
+    color: var(--text) !important;
+    border-color: rgba(151, 192, 230, 0.08) !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================================
+   ACTIVE / PRESSED
+   ========================================================================== */
+
+.stButton > button:active,
+.stDownloadButton > button:active,
+div[data-testid="stFormSubmitButton"] button:active {
+    transform: translateY(0) scale(0.995) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.035),
+        0 8px 18px rgba(2, 8, 18, 0.18) !important;
+}
+
+.stButton > button[kind="primary"]:active,
+.stDownloadButton > button[kind="primary"]:active,
+div[data-testid="stFormSubmitButton"] button[kind="primary"]:active {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.36),
+        0 10px 20px rgba(29, 98, 178, 0.22) !important;
+}
+
+/* ==========================================================================
+   FOCUS
+   ========================================================================== */
+
+.stButton > button:focus,
+.stButton > button:focus-visible,
+.stDownloadButton > button:focus,
+.stDownloadButton > button:focus-visible,
+div[data-testid="stFormSubmitButton"] button:focus,
+div[data-testid="stFormSubmitButton"] button:focus-visible {
+    outline: none !important;
+    border-color: var(--stroke-focus) !important;
+    box-shadow:
+        var(--focus-ring),
+        0 12px 26px rgba(2, 8, 18, 0.18) !important;
+}
+
+.stButton > button[kind="primary"]:focus,
+.stButton > button[kind="primary"]:focus-visible,
+.stDownloadButton > button[kind="primary"]:focus,
+.stDownloadButton > button[kind="primary"]:focus-visible,
+div[data-testid="stFormSubmitButton"] button[kind="primary"]:focus,
+div[data-testid="stFormSubmitButton"] button[kind="primary"]:focus-visible {
+    border-color: rgba(235, 246, 255, 0.98) !important;
+    box-shadow:
+        0 0 0 4px rgba(103, 193, 255, 0.18),
+        0 18px 32px rgba(29, 98, 178, 0.22) !important;
+}
+
+/* ==========================================================================
+   DISABLED
+   ========================================================================== */
+
+.stButton > button:disabled,
+.stDownloadButton > button:disabled,
+div[data-testid="stFormSubmitButton"] button:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+    color: rgba(220, 236, 250, 0.56) !important;
+    border-color: rgba(151, 192, 230, 0.08) !important;
+    background:
+        linear-gradient(180deg, rgba(17, 26, 39, 0.62), rgba(11, 18, 30, 0.72)) !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.stButton > button:disabled::before,
+.stDownloadButton > button:disabled::before,
+div[data-testid="stFormSubmitButton"] button:disabled::before,
+.stButton > button:disabled::after,
+.stDownloadButton > button:disabled::after,
+div[data-testid="stFormSubmitButton"] button:disabled::after {
+    opacity: 0 !important;
+}
+
+/* ==========================================================================
+   BLOCK / FULL-WIDTH FRIENDLY
+   ========================================================================== */
+
+.stButton,
+.stDownloadButton,
+div[data-testid="stFormSubmitButton"] {
+    width: 100%;
+}
+
+.stButton > button,
+.stDownloadButton > button,
+div[data-testid="stFormSubmitButton"] button {
+    width: 100%;
+}
+
+/* ==========================================================================
+   ICON / INNER ALIGNMENT IMPROVEMENTS
+   ========================================================================== */
+
+.stButton > button > div,
+.stDownloadButton > button > div,
+div[data-testid="stFormSubmitButton"] button > div {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    width: 100%;
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .stButton > button,
+    .stDownloadButton > button,
+    div[data-testid="stFormSubmitButton"] button,
+    .stButton > button::before,
+    .stButton > button::after,
+    .stDownloadButton > button::before,
+    .stDownloadButton > button::after,
+    div[data-testid="stFormSubmitButton"] button::before,
+    div[data-testid="stFormSubmitButton"] button::after {
+        transition: none !important;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE TUNING
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .stButton > button,
+    .stDownloadButton > button,
+    div[data-testid="stFormSubmitButton"] button {
+        min-height: 47px !important;
+        padding: 0.74rem 0.95rem !important;
+        border-radius: 14px !important;
+        font-size: 0.93rem !important;
+    }
+}

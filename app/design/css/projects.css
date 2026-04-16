@@ -1,0 +1,99 @@
+/* ==========================================================================
+   PROJECT ASSIGNMENT BUILDER
+   ========================================================================== */
+
+[class*="st-key-assignment_scope_shell"],
+[class*="st-key-assignment_coverage_shell"],
+[class*="st-key-assignment_selection_shell"],
+[class*="st-key-assignment_snapshot_shell"],
+[class*="st-key-assignment_conflict_shell"],
+[class*="st-key-assignment_details_shell"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+}
+
+[class*="st-key-assignment_scope_shell"] {
+    margin-bottom: 1rem !important;
+}
+
+[class*="st-key-assignment_scope_shell"] [data-testid="stHorizontalBlock"],
+[class*="st-key-assignment_details_shell"] [data-testid="stHorizontalBlock"] {
+    align-items: flex-start !important;
+    gap: 1rem !important;
+}
+
+[class*="st-key-assignment_selection_shell"] {
+    margin-bottom: 1rem !important;
+}
+
+[class*="st-key-assignment_selection_shell"] [data-testid="stExpander"] {
+    margin-bottom: 0.9rem !important;
+    border: 1px solid rgba(151, 192, 230, 0.12) !important;
+    border-radius: 18px !important;
+    background:
+        linear-gradient(180deg, rgba(13, 21, 33, 0.92), rgba(9, 15, 24, 0.90)) !important;
+    overflow: hidden !important;
+}
+
+[class*="st-key-assignment_selection_shell"] [data-testid="stExpander"] > details {
+    border: none !important;
+}
+
+[class*="st-key-assignment_selection_shell"] [data-testid="stExpander"] summary {
+    padding-top: 0.18rem !important;
+    padding-bottom: 0.18rem !important;
+}
+
+[class*="st-key-assignment_selection_shell"] [data-testid="stTextInput"] {
+    margin-top: 0.18rem !important;
+    margin-bottom: 0.48rem !important;
+}
+
+[class*="st-key-assignment_selection_shell"] .stButton > button {
+    min-height: 38px !important;
+}
+
+[class*="st-key-assignment_snapshot_shell"] {
+    margin-top: 0.35rem !important;
+    margin-bottom: 1rem !important;
+}
+
+[class*="st-key-assignment_conflict_shell"] {
+    margin-top: 0.4rem !important;
+    margin-bottom: 1rem !important;
+}
+
+[class*="st-key-assignment_details_shell"] {
+    margin-top: 0.15rem !important;
+}
+
+[class*="st-key-project_overview_export_shell"] {
+    margin-top: 0.35rem !important;
+    margin-bottom: 1rem !important;
+}
+
+[class*="st-key-project_overview_export_shell"] [data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+    gap: 0.9rem !important;
+}
+
+[class*="st-key-assignment_details_shell"] [data-testid="stCaptionContainer"] p,
+[class*="st-key-assignment_selection_shell"] [data-testid="stCaptionContainer"] p {
+    line-height: 1.5 !important;
+}
+
+[class*="st-key-assignment_details_shell"] .stButton > button {
+    margin-top: 0.45rem !important;
+}
+
+@media (max-width: 767.98px) {
+    [class*="st-key-assignment_scope_shell"] [data-testid="stHorizontalBlock"],
+    [class*="st-key-assignment_details_shell"] [data-testid="stHorizontalBlock"] {
+        gap: 0.78rem !important;
+    }
+
+    [class*="st-key-assignment_selection_shell"] [data-testid="stExpander"] {
+        border-radius: 16px !important;
+    }
+}

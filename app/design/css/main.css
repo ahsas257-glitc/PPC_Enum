@@ -1,0 +1,291 @@
+/* ==========================================================================
+   GLOBAL FOUNDATION
+   ========================================================================== */
+
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"] {
+    min-height: 100vh;
+    height: auto;
+    background: var(--app-bg) !important;
+}
+
+html,
+body,
+[class*="css"] {
+    color: var(--text);
+    font-family: var(--font-body);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > .main,
+section[data-testid="stMain"] {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: var(--text);
+    font-family: var(--font-display);
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: clamp(1.9rem, 3vw, 3rem);
+}
+
+h2 {
+    font-size: clamp(1.55rem, 2.3vw, 2.3rem);
+}
+
+h3 {
+    font-size: clamp(1.22rem, 1.8vw, 1.65rem);
+}
+
+h4 {
+    font-size: 1.06rem;
+}
+
+h5,
+h6 {
+    font-size: 0.96rem;
+}
+
+p,
+label,
+span,
+small,
+li {
+    color: var(--text-soft);
+}
+
+p,
+li {
+    line-height: 1.68;
+}
+
+strong,
+b {
+    color: var(--text);
+    font-weight: 700;
+}
+
+small {
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+code,
+pre,
+kbd,
+samp {
+    font-family: var(--font-mono, "JetBrains Mono", "Consolas", monospace);
+}
+
+/* ==========================================================================
+   MAIN CONTENT LAYER
+   ========================================================================== */
+
+[data-testid="stMainBlockContainer"] {
+    --app-header-height: 3.2rem;
+    --app-page-zoom: 0.965;
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - var(--app-header-height));
+    height: auto;
+    overflow-y: auto !important;
+    overflow-x: clip !important;
+    padding-bottom: 1.2rem !important;
+    overscroll-behavior-y: auto;
+    scrollbar-gutter: stable both-edges;
+    zoom: var(--app-page-zoom);
+}
+
+[data-testid="stMainBlockContainer"] hr,
+[data-testid="stAppViewContainer"] .main hr {
+    display: none !important;
+}
+
+@supports not (zoom: 1) {
+    [data-testid="stMainBlockContainer"] {
+        transform: scale(var(--app-page-zoom));
+        transform-origin: top center;
+        width: calc(100% / var(--app-page-zoom));
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* ==========================================================================
+   MARKDOWN / CAPTIONS / MUTED TEXT
+   ========================================================================== */
+
+.stMarkdown p,
+.stCaption,
+small {
+    color: var(--text-soft) !important;
+}
+
+[data-testid="stCaptionContainer"] p,
+.stCaption p {
+    color: var(--text-muted) !important;
+    font-size: 0.84rem !important;
+    line-height: 1.58 !important;
+}
+
+/* Better text rhythm inside markdown */
+.stMarkdown ul,
+.stMarkdown ol {
+    color: var(--text-soft) !important;
+    padding-left: 1.1rem;
+}
+
+.stMarkdown li + li {
+    margin-top: 0.28rem;
+}
+
+.stMarkdown blockquote {
+    margin: 0.9rem 0;
+    padding: 0.85rem 1rem;
+    border-left: 3px solid rgba(121, 220, 255, 0.24);
+    border-radius: 0 14px 14px 0;
+    background: rgba(255,255,255,0.025);
+    color: var(--text-soft) !important;
+}
+
+/* ==========================================================================
+   LINKS
+   ========================================================================== */
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition:
+        color var(--duration-fast) var(--ease-standard),
+        opacity var(--duration-fast) var(--ease-standard);
+}
+
+a:hover {
+    color: #ace9ff;
+}
+
+a:focus,
+a:focus-visible {
+    outline: none;
+    border-radius: 6px;
+    box-shadow: 0 0 0 3px rgba(104, 196, 255, 0.14);
+}
+
+/* ==========================================================================
+   ALERTS
+   ========================================================================== */
+
+[data-testid="stAlert"] {
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.84rem;
+    border-radius: 20px !important;
+    border: 1px solid rgba(151, 192, 230, 0.14) !important;
+    background:
+        linear-gradient(145deg, rgba(17, 29, 45, 0.92), rgba(8, 15, 24, 0.92)) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        inset 0 -1px 0 rgba(255,255,255,0.012),
+        0 16px 34px rgba(1, 8, 18, 0.20) !important;
+    backdrop-filter: blur(16px) saturate(145%);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    isolation: isolate;
+}
+
+[data-testid="stAlert"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(120deg, rgba(255,255,255,0.06), transparent 36%, rgba(121, 220, 255, 0.045) 68%, transparent 100%),
+        radial-gradient(circle at top right, rgba(106, 168, 255, 0.08), transparent 28%);
+    opacity: 0.9;
+}
+
+[data-testid="stAlert"] > * {
+    position: relative;
+    z-index: 1;
+}
+
+[data-testid="stAlert"] * {
+    color: var(--text) !important;
+}
+
+/* ==========================================================================
+   SELECTION / UTILITY POLISH
+   ========================================================================== */
+
+::selection {
+    background: rgba(121, 220, 255, 0.22);
+    color: #f7fbff;
+}
+
+:where(.stMarkdown, [data-testid="stMarkdownContainer"]) em {
+    color: #d7e9f8;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    [data-testid="stMainBlockContainer"] {
+        --app-header-height: 3rem;
+        --app-page-zoom: 0.985;
+        padding-bottom: 0.9rem !important;
+    }
+
+    h1 {
+        font-size: clamp(1.72rem, 7vw, 2.4rem);
+    }
+
+    h2 {
+        font-size: clamp(1.42rem, 5.6vw, 2rem);
+    }
+
+    h3 {
+        font-size: clamp(1.12rem, 4.8vw, 1.42rem);
+    }
+
+    [data-testid="stAlert"] {
+        border-radius: 18px !important;
+    }
+
+    .stMarkdown blockquote {
+        padding: 0.78rem 0.88rem;
+        border-radius: 0 12px 12px 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a,
+    [data-testid="stAlert"] {
+        transition: none !important;
+    }
+}

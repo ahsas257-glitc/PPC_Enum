@@ -1,0 +1,8 @@
+USER_ROLES = ["super_admin", "admin", "manager", "viewer"]
+APPROVABLE_USER_ROLES = ["admin", "manager", "viewer"]
+PROJECT_TYPES = ["CBE", "PB", "WASH", "OTHER"]
+PROJECT_STATUSES = ["PLANNED", "ACTIVE", "ON_HOLD", "CLOSED"]
+PAYMENT_METHODS = ["BANK_TRANSFER", "MOBILE_WALLET", "BOTH"]
+PAYMENT_TYPES = ["BANK_ACCOUNT", "MOBILE_CREDIT"]
+ASSIGNMENT_STATUSES = ["HIRED", "ACTIVE", "ENDED"]
+GENDERS = ["Male", "Female"]

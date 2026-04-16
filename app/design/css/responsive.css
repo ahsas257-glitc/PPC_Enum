@@ -1,0 +1,1118 @@
+/* ==========================================================================
+   RESPONSIVE SYSTEM
+   Mobile: <768px
+   Tablet: 768-1024px
+   Laptop: 1024-1440px
+   Desktop: >1440px
+   ========================================================================== */
+
+:root {
+    --content-max-width: 1360px;
+    --responsive-gap: 1rem;
+    --responsive-section-gap: 1.1rem;
+    --fs-h1: 2.45rem;
+    --fs-h2: 2rem;
+    --fs-h3: 1.35rem;
+    --fs-h4: 1.05rem;
+    --fs-body: 0.96rem;
+    --fs-small: 0.84rem;
+    --fs-label: 0.76rem;
+    --fs-kicker: 0.68rem;
+    --fs-button: 0.94rem;
+    --fs-metric-value: 2.55rem;
+    --fs-table-head: 0.8rem;
+    --fs-table-cell: 0.92rem;
+    --surface-radius: 24px;
+    --surface-radius-large: 28px;
+    --surface-padding: 1.08rem;
+    --surface-padding-tight: 0.92rem;
+    --hero-min-height: 116px;
+    --hero-padding: 0.95rem 1.08rem;
+    --metric-card-min-height: 164px;
+    --showcase-card-min-height: 180px;
+    --auth-card-min-height: 104px;
+    --search-card-min-height: 560px;
+    --button-min-height: 50px;
+    --button-padding: 0.78rem 1.08rem;
+    --table-padding: 0.72rem;
+    --table-min-width: min(720px, 100%);
+    --sidebar-card-padding: 0.64rem 0.66rem 0.62rem;
+    --sidebar-nav-height: 38px;
+}
+
+.block-container {
+    width: min(100%, var(--content-max-width)) !important;
+    max-width: min(var(--content-max-width), calc(100vw - 2rem)) !important;
+}
+
+[data-testid="stMainBlockContainer"],
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > .main,
+.block-container,
+.block-container * {
+    box-sizing: border-box !important;
+}
+
+.block-container img,
+.block-container canvas,
+.block-container iframe,
+.block-container video,
+.block-container svg {
+    max-width: 100% !important;
+}
+
+.block-container :where(h1, h2, h3, h4, h5, h6, p, li, label, span, strong, small, button) {
+    overflow-wrap: anywhere;
+}
+
+.block-container :where(h1, h2, h3, h4, h5, h6, .glass-hero h1, .glass-metric-value, .showcase-card-title) {
+    letter-spacing: 0 !important;
+}
+
+h1,
+.glass-hero h1 {
+    font-size: 2.45rem !important;
+}
+
+h2 {
+    font-size: 2rem !important;
+}
+
+h3,
+.auth-stage h3,
+.panel-intro h3,
+.sr-match-shell h3 {
+    font-size: 1.35rem !important;
+}
+
+.glass-metric-value {
+    font-size: 2.55rem !important;
+}
+
+.glass-metric-grid,
+.showcase-grid,
+.stat-band {
+    display: grid !important;
+    gap: var(--responsive-gap) !important;
+    align-items: stretch !important;
+}
+
+.glass-metric-grid,
+.showcase-grid,
+.stat-band {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.stat-band-chip {
+    min-width: 0 !important;
+}
+
+[data-testid="stDataFrame"],
+[data-testid="stTable"],
+.stDataFrame {
+    overflow-x: auto !important;
+}
+
+[data-testid="stDataFrame"] [role="grid"],
+[data-testid="stTable"] table {
+    min-width: min(720px, 100%) !important;
+}
+
+/* Mobile: one column + hamburger sidebar */
+@media (max-width: 767.98px) {
+    :root {
+        --content-max-width: 100%;
+        --responsive-gap: 0.82rem;
+        --responsive-section-gap: 0.95rem;
+        --grid-opacity: 0.03;
+        --fs-h1: 1.68rem;
+        --fs-h2: 1.42rem;
+        --fs-h3: 1.12rem;
+        --fs-h4: 0.98rem;
+        --fs-body: 0.9rem;
+        --fs-small: 0.78rem;
+        --fs-label: 0.7rem;
+        --fs-kicker: 0.62rem;
+        --fs-button: 0.9rem;
+        --fs-metric-value: 1.95rem;
+        --fs-table-head: 0.72rem;
+        --fs-table-cell: 0.84rem;
+        --surface-radius: 18px;
+        --surface-radius-large: 20px;
+        --surface-padding: 0.86rem;
+        --surface-padding-tight: 0.76rem;
+        --hero-min-height: 96px;
+        --hero-padding: 0.82rem 0.88rem;
+        --metric-card-min-height: 128px;
+        --showcase-card-min-height: 132px;
+        --auth-card-min-height: 88px;
+        --search-card-min-height: auto;
+        --button-min-height: 44px;
+        --button-padding: 0.68rem 0.84rem;
+        --table-padding: 0.52rem;
+        --table-min-width: 620px;
+        --sidebar-card-padding: 0.58rem 0.58rem 0.56rem;
+        --sidebar-nav-height: 36px;
+        --field-height: 48px;
+        --field-content-padding-x: 0.84rem;
+        --field-font-size: 0.9rem;
+        --field-textarea-min-height: 96px;
+    }
+
+    h1,
+    .glass-hero h1 {
+        font-size: 1.78rem !important;
+    }
+
+    h2 {
+        font-size: 1.48rem !important;
+    }
+
+    h3,
+    .auth-stage h3,
+    .panel-intro h3,
+    .sr-match-shell h3 {
+        font-size: 1.15rem !important;
+    }
+
+    .glass-metric-value {
+        font-size: 2rem !important;
+    }
+
+    .block-container {
+        width: 100% !important;
+        max-width: calc(100vw - 0.75rem) !important;
+        margin-top: 3.5rem !important;
+        margin-bottom: 1.2rem !important;
+        padding-right: 0.75rem !important;
+        padding-left: 0.75rem !important;
+    }
+
+    .block-container [data-testid="stHorizontalBlock"] {
+        flex-direction: column !important;
+        gap: var(--responsive-gap) !important;
+    }
+
+    .block-container [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    .glass-metric-grid,
+    .showcase-grid,
+    .stat-band {
+        grid-template-columns: 1fr !important;
+    }
+
+    .glass-hero-grid,
+    .panel-intro-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .panel-intro-row {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+
+    .glass-hero-orbit,
+    .panel-orb {
+        display: none !important;
+    }
+
+    [data-baseweb="tab-list"] {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+    }
+
+    [data-baseweb="tab"] {
+        flex: 1 0 max-content !important;
+    }
+
+    [data-testid="stSidebar"] {
+        width: min(86vw, 21rem) !important;
+        max-width: 86vw !important;
+    }
+
+    [data-testid="stSidebar"] > div:first-child {
+        padding: 0.2rem 0.72rem 0.9rem !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label {
+        min-height: 36px !important;
+    }
+
+    [data-testid="stHeader"] {
+        min-height: 3rem !important;
+    }
+
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"],
+    .stDataFrame {
+        max-width: calc(100vw - 1.5rem) !important;
+    }
+
+    [data-testid="stDataFrame"] [role="grid"],
+    [data-testid="stTable"] table {
+        min-width: 620px !important;
+    }
+}
+
+/* Tablet: two columns */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    :root {
+        --content-max-width: 960px;
+        --responsive-gap: 0.95rem;
+        --fs-h1: 2.05rem;
+        --fs-h2: 1.7rem;
+        --fs-h3: 1.24rem;
+        --fs-h4: 1.02rem;
+        --fs-body: 0.94rem;
+        --fs-small: 0.82rem;
+        --fs-label: 0.74rem;
+        --fs-kicker: 0.66rem;
+        --fs-button: 0.92rem;
+        --fs-metric-value: 2.2rem;
+        --fs-table-head: 0.77rem;
+        --fs-table-cell: 0.88rem;
+        --surface-radius: 21px;
+        --surface-radius-large: 24px;
+        --surface-padding: 0.98rem;
+        --surface-padding-tight: 0.86rem;
+        --hero-min-height: 104px;
+        --hero-padding: 0.9rem 1rem;
+        --metric-card-min-height: 146px;
+        --showcase-card-min-height: 150px;
+        --auth-card-min-height: 96px;
+        --search-card-min-height: 520px;
+        --button-min-height: 47px;
+        --button-padding: 0.72rem 0.94rem;
+        --table-padding: 0.62rem;
+        --table-min-width: 680px;
+        --sidebar-card-padding: 0.62rem 0.62rem 0.6rem;
+        --sidebar-nav-height: 38px;
+        --field-height: 50px;
+        --field-content-padding-x: 0.9rem;
+        --field-font-size: 0.92rem;
+        --field-textarea-min-height: 104px;
+    }
+
+    h1,
+    .glass-hero h1 {
+        font-size: 2.05rem !important;
+    }
+
+    h2 {
+        font-size: 1.7rem !important;
+    }
+
+    .glass-metric-value {
+        font-size: 2.2rem !important;
+    }
+
+    .block-container {
+        max-width: min(960px, calc(100vw - 2rem)) !important;
+    }
+
+    .glass-metric-grid,
+    .showcase-grid,
+    .stat-band {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+/* Laptop: three columns */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+    :root {
+        --content-max-width: 1200px;
+        --responsive-gap: 1rem;
+        --fs-h1: 2.32rem;
+        --fs-h2: 1.86rem;
+        --fs-h3: 1.32rem;
+        --fs-h4: 1.04rem;
+        --fs-body: 0.96rem;
+        --fs-small: 0.84rem;
+        --fs-label: 0.76rem;
+        --fs-kicker: 0.68rem;
+        --fs-button: 0.94rem;
+        --fs-metric-value: 2.42rem;
+        --surface-radius: 23px;
+        --surface-radius-large: 26px;
+        --surface-padding: 1rem;
+        --surface-padding-tight: 0.9rem;
+        --hero-min-height: 110px;
+        --hero-padding: 0.92rem 1rem;
+        --metric-card-min-height: 154px;
+        --showcase-card-min-height: 164px;
+        --auth-card-min-height: 100px;
+        --search-card-min-height: 560px;
+        --button-min-height: 48px;
+        --button-padding: 0.74rem 1rem;
+        --table-padding: 0.66rem;
+        --table-min-width: min(720px, 100%);
+        --sidebar-nav-height: 38px;
+    }
+
+    .block-container {
+        max-width: min(1200px, calc(100vw - 2.4rem)) !important;
+    }
+
+    .glass-metric-grid,
+    .showcase-grid,
+    .stat-band {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+/* Large desktop: four columns inside a capped shell */
+@media (min-width: 1440px) {
+    :root {
+        --content-max-width: 1360px;
+        --responsive-gap: 1.08rem;
+        --fs-h1: 2.56rem;
+        --fs-h2: 2.08rem;
+        --fs-h3: 1.42rem;
+        --fs-h4: 1.08rem;
+        --fs-body: 0.98rem;
+        --fs-small: 0.86rem;
+        --fs-label: 0.78rem;
+        --fs-kicker: 0.7rem;
+        --fs-button: 0.96rem;
+        --fs-metric-value: 2.68rem;
+        --surface-radius: 24px;
+        --surface-radius-large: 28px;
+        --surface-padding: 1.12rem;
+        --surface-padding-tight: 0.96rem;
+        --hero-min-height: 120px;
+        --hero-padding: 1rem 1.12rem;
+        --metric-card-min-height: 168px;
+        --showcase-card-min-height: 184px;
+        --auth-card-min-height: 108px;
+        --search-card-min-height: 560px;
+        --button-min-height: 50px;
+        --button-padding: 0.78rem 1.08rem;
+        --table-padding: 0.74rem;
+        --table-min-width: min(760px, 100%);
+        --sidebar-nav-height: 38px;
+    }
+
+    .block-container {
+        max-width: min(1360px, calc(100vw - 3rem)) !important;
+    }
+
+    .glass-metric-grid,
+    .stat-band {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+
+    .showcase-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+    }
+}
+
+/* Size all repeated content from the active breakpoint variables. */
+.stApp,
+.stApp * {
+    letter-spacing: 0 !important;
+}
+
+.block-container {
+    font-size: var(--fs-body) !important;
+}
+
+.block-container [data-testid="stVerticalBlock"] {
+    gap: var(--responsive-section-gap) !important;
+}
+
+.block-container :where(p, li, label, span, small),
+[data-testid="stSidebar"] :where(p, label, span, small),
+[data-baseweb="popover"] :where(p, label, span, small) {
+    font-size: var(--fs-body) !important;
+}
+
+.block-container :where(input, textarea, select) {
+    font-size: var(--field-font-size) !important;
+}
+
+.block-container small,
+.stCaption,
+[data-testid="stCaptionContainer"] p,
+.stCaption p {
+    font-size: var(--fs-small) !important;
+}
+
+h1,
+.glass-hero h1 {
+    font-size: var(--fs-h1) !important;
+}
+
+h2 {
+    font-size: var(--fs-h2) !important;
+}
+
+h3,
+.auth-stage h3,
+.panel-intro h3,
+.sr-match-shell h3 {
+    font-size: var(--fs-h3) !important;
+}
+
+h4,
+h5,
+h6 {
+    font-size: var(--fs-h4) !important;
+}
+
+.glass-hero,
+.showcase-card,
+.stat-band-chip,
+.auth-stage,
+.panel-intro,
+.glass-metric-card,
+.sr-match-shell,
+.sr-empty-state,
+[data-testid="stAlert"],
+div[data-testid="stForm"] {
+    border-radius: var(--surface-radius) !important;
+}
+
+.glass-hero {
+    min-height: var(--hero-min-height) !important;
+    padding: var(--hero-padding) !important;
+}
+
+.glass-hero p,
+.auth-stage p,
+.glass-panel-meta,
+.showcase-card p,
+.sr-match-shell p {
+    font-size: var(--fs-body) !important;
+}
+
+.glass-hero-kicker,
+.panel-intro-kicker,
+.auth-stage-kicker,
+.sidebar-brand-eyebrow,
+.sidebar-footer-label,
+.sr-match-shell__kicker,
+.sr-profile-section h4,
+.sr-profile-line span,
+.stat-band-chip span,
+.glass-metric-label {
+    font-size: var(--fs-kicker) !important;
+}
+
+.glass-metric-card {
+    min-height: var(--metric-card-min-height) !important;
+    padding: var(--surface-padding) !important;
+}
+
+.glass-metric-value {
+    font-size: var(--fs-metric-value) !important;
+}
+
+.showcase-card {
+    min-height: var(--showcase-card-min-height) !important;
+    padding: var(--surface-padding) !important;
+}
+
+.showcase-card-title,
+.stat-band-chip strong {
+    font-size: var(--fs-h4) !important;
+}
+
+.sr-profile-line strong {
+    font-size: calc(var(--fs-small) * 0.92) !important;
+}
+
+.stat-band-chip,
+.auth-stage,
+.panel-intro,
+.sr-match-shell,
+.sr-empty-state {
+    padding: var(--surface-padding) !important;
+}
+
+.auth-stage {
+    min-height: var(--auth-card-min-height) !important;
+}
+
+.sr-match-shell,
+.sr-empty-state {
+    min-height: var(--search-card-min-height) !important;
+}
+
+.sr-profile-line {
+    padding: 0.14rem 0 0.2rem !important;
+    border-radius: 0 !important;
+}
+
+.data-card span,
+.doc-table td span {
+    font-size: var(--fs-small) !important;
+}
+
+div[data-testid="stForm"] {
+    padding: var(--surface-padding) !important;
+}
+
+label[data-testid="stWidgetLabel"] p,
+[data-testid="stCheckbox"] [data-testid="stMarkdownContainer"] p,
+.field-error-hint {
+    font-size: var(--fs-small) !important;
+}
+
+.stButton > button,
+.stDownloadButton > button,
+div[data-testid="stFormSubmitButton"] button {
+    min-height: var(--button-min-height) !important;
+    padding: var(--button-padding) !important;
+    border-radius: calc(var(--surface-radius) - 8px) !important;
+    font-size: var(--fs-button) !important;
+    white-space: normal !important;
+}
+
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] .stDownloadButton > button {
+    min-height: 34px !important;
+    padding: 0.38rem 0.62rem !important;
+    border-radius: 9px !important;
+    font-size: clamp(0.68rem, calc(var(--fs-small) * 0.84), 0.74rem) !important;
+}
+
+[data-baseweb="tab-list"] {
+    gap: calc(var(--responsive-gap) * 0.45) !important;
+}
+
+[data-baseweb="tab"] {
+    min-height: var(--button-min-height) !important;
+    padding: var(--button-padding) !important;
+    border-radius: calc(var(--surface-radius) - 8px) !important;
+    font-size: var(--fs-small) !important;
+}
+
+[data-testid="stDataFrame"],
+[data-testid="stTable"],
+.stDataFrame {
+    padding: var(--table-padding) !important;
+    border-radius: var(--surface-radius) !important;
+}
+
+[data-testid="stDataFrame"] [role="grid"],
+[data-testid="stTable"] table {
+    min-width: var(--table-min-width) !important;
+    border-radius: calc(var(--surface-radius) - 6px) !important;
+}
+
+[data-testid="stDataFrame"] [role="columnheader"],
+[data-testid="stTable"] thead tr th {
+    font-size: var(--fs-table-head) !important;
+}
+
+[data-testid="stDataFrame"] [role="gridcell"],
+[data-testid="stTable"] tbody tr td {
+    font-size: var(--fs-table-cell) !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding: 0.12rem var(--surface-padding-tight) var(--surface-padding-tight) !important;
+}
+
+.sidebar-brand-card {
+    margin-top: -0.24rem !important;
+    margin-bottom: 0.22rem !important;
+    padding: var(--sidebar-card-padding) !important;
+    border-radius: var(--surface-radius) !important;
+}
+
+.sidebar-brand-card p,
+[data-testid="stSidebar"] [data-testid="stRadio"] label p {
+    font-size: var(--fs-small) !important;
+}
+
+.sidebar-brand-card p {
+    font-size: clamp(0.68rem, calc(var(--fs-small) * 0.86), 0.76rem) !important;
+    line-height: 1.24 !important;
+}
+
+.sidebar-role-pill {
+    font-size: clamp(0.56rem, calc(var(--fs-small) * 0.76), 0.64rem) !important;
+}
+
+.sidebar-brand-eyebrow {
+    max-width: 100% !important;
+    font-size: clamp(0.48rem, calc(var(--fs-kicker) * 0.8), 0.54rem) !important;
+    line-height: 1 !important;
+    letter-spacing: 0.045em !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    min-height: var(--sidebar-nav-height) !important;
+    border-radius: 10px !important;
+    padding: 0.34rem 0.50rem !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label p {
+    font-size: clamp(0.66rem, calc(var(--fs-small) * 0.82), 0.72rem) !important;
+    line-height: 1.12 !important;
+    font-weight: 760 !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* ==========================================================================
+   CONTENT-AWARE METRIC / STAT TYPOGRAPHY
+   ========================================================================== */
+
+.glass-metric-value,
+.glass-metric-label,
+.stat-band-chip strong,
+.stat-band-chip span {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.glass-metric-card.metric-label-medium .glass-metric-label { font-size: calc(var(--fs-kicker) * 0.95) !important; }
+.glass-metric-card.metric-label-long .glass-metric-label { font-size: calc(var(--fs-kicker) * 0.9) !important; }
+.glass-metric-card.metric-label-xlong .glass-metric-label { font-size: calc(var(--fs-kicker) * 0.84) !important; }
+
+.glass-metric-card.metric-value-medium .glass-metric-value { font-size: calc(var(--fs-metric-value) * 0.86) !important; }
+.glass-metric-card.metric-value-long .glass-metric-value { font-size: calc(var(--fs-metric-value) * 0.72) !important; }
+.glass-metric-card.metric-value-xlong .glass-metric-value { font-size: calc(var(--fs-metric-value) * 0.58) !important; }
+
+/* Dashboard compact cards: keep small and distinct under global responsive overrides */
+.glass-metric-grid.glass-metric-grid--compact {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: calc(var(--responsive-gap) * 0.62) !important;
+}
+
+.glass-metric-card.glass-metric-card--compact {
+    min-height: clamp(86px, 11vh, 108px) !important;
+    padding: 0.62rem 0.72rem !important;
+    border-radius: calc(var(--surface-radius) - 8px) !important;
+}
+
+.glass-metric-card.glass-metric-card--compact .glass-metric-label {
+    font-size: calc(var(--fs-kicker) * 0.88) !important;
+}
+
+.glass-metric-card.glass-metric-card--compact .glass-metric-value {
+    margin-top: 0.4rem !important;
+    font-size: calc(var(--fs-metric-value) * 0.56) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.015em !important;
+}
+
+.stat-band-chip.stat-label-medium span { font-size: calc(var(--fs-kicker) * 0.95) !important; }
+.stat-band-chip.stat-label-long span { font-size: calc(var(--fs-kicker) * 0.88) !important; }
+.stat-band-chip.stat-label-xlong span { font-size: calc(var(--fs-kicker) * 0.8) !important; }
+
+.stat-band-chip.stat-value-medium strong { font-size: calc(var(--fs-h4) * 0.95) !important; }
+.stat-band-chip.stat-value-long strong { font-size: calc(var(--fs-h4) * 0.88) !important; }
+.stat-band-chip.stat-value-xlong strong { font-size: calc(var(--fs-h4) * 0.8) !important; }
+
+/* ==========================================================================
+   HERO KICKER: FORCE SINGLE LINE + CONTENT WIDTH
+   ========================================================================== */
+
+.glass-hero-kicker,
+.glass-hero-kicker span,
+.panel-intro-kicker,
+.panel-intro-kicker span,
+.auth-stage-kicker,
+.auth-stage-kicker span {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+}
+
+.glass-hero-kicker,
+.panel-intro-kicker,
+.auth-stage-kicker {
+    width: fit-content !important;
+    max-width: 100% !important;
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .glass-metric-grid.glass-metric-grid--compact {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .glass-metric-grid.glass-metric-grid--compact {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .glass-metric-card.glass-metric-card--compact {
+        min-height: 82px !important;
+        padding: 0.56rem 0.6rem !important;
+    }
+
+    .glass-metric-card.glass-metric-card--compact .glass-metric-value {
+        font-size: calc(var(--fs-metric-value) * 0.5) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .block-container *,
+    .block-container *::before,
+    .block-container *::after {
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================================================
+   PERFORMANCE SMOOTHNESS (LOW-JANK NAVIGATION)
+   ========================================================================== */
+
+.stApp::before {
+    filter: blur(14px) saturate(108%) !important;
+    opacity: 0.62 !important;
+}
+
+[data-testid="stAppViewContainer"]::before {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+    opacity: calc(var(--grid-opacity, 0.05) * 0.55) !important;
+}
+
+.stApp::after {
+    animation: none !important;
+    filter: brightness(1.08) saturate(0.98) contrast(1) !important;
+}
+
+.block-container::before,
+.glass-hero,
+.glass-table-wrap,
+.showcase-card,
+.stat-band-chip,
+.auth-stage,
+.sidebar-brand-card,
+.panel-intro,
+div[data-testid="stForm"],
+[data-testid="stAlert"],
+.sr-match-shell,
+.sr-empty-state,
+[data-testid="stSidebar"] > div:first-child {
+    backdrop-filter: blur(10px) saturate(112%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(112%) !important;
+}
+
+.glass-hero-backdrop,
+.glass-hero-orbit span,
+.glass-hero-orbit::before,
+.glass-hero-dot,
+.panel-orb,
+.panel-orb::before,
+.panel-intro-kicker::before,
+.auth-stage-kicker::before {
+    animation: none !important;
+}
+
+.showcase-card,
+.stat-band-chip,
+.panel-intro,
+.auth-stage,
+.sidebar-brand-card,
+.stButton > button,
+.stDownloadButton > button,
+div[data-testid="stFormSubmitButton"] button,
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    transition:
+        border-color 120ms linear !important,
+        box-shadow 120ms linear !important,
+        background 120ms linear !important;
+}
+
+.showcase-card:hover,
+.stat-band-chip:hover,
+.panel-intro:hover,
+.auth-stage:hover,
+.sidebar-brand-card:hover {
+    transform: none !important;
+}
+
+/* ==========================================================================
+   FINAL APP-WIDE FIELD SKIN
+   Loaded last so every data-entry box keeps one color and one design.
+   ========================================================================== */
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"],
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"],
+.block-container [data-testid="stTextInputRootElement"],
+.block-container [data-testid="stTextAreaRootElement"],
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"],
+.block-container [data-testid="stNumberInputContainer"],
+.block-container [data-testid="stDateInput"] [data-baseweb="input"],
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"],
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"] {
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(116, 177, 225, 0.28) !important;
+    border-radius: 14px !important;
+    background: #0d1726 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.035),
+        0 8px 18px rgba(2, 8, 18, 0.16) !important;
+    transition:
+        border-color 120ms linear,
+        background 120ms linear,
+        box-shadow 120ms linear !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"] > *,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"] > *,
+.block-container [data-testid="stTextInputRootElement"] > *,
+.block-container [data-testid="stTextAreaRootElement"] > *,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"] > *,
+.block-container [data-testid="stNumberInputContainer"] > *,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"] > *,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"] > *,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"] > * {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"],
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"],
+.block-container [data-testid="stTextInputRootElement"],
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"],
+.block-container [data-testid="stNumberInputContainer"],
+.block-container [data-testid="stDateInput"] [data-baseweb="input"],
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"],
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"] {
+    min-height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.block-container [data-testid="stTextAreaRootElement"] {
+    min-height: 112px !important;
+}
+
+.block-container [data-testid="stTextInput"] input,
+.block-container [data-testid="stTextArea"] textarea,
+.block-container [data-testid="stNumberInput"] input,
+.block-container [data-testid="stDateInput"] input,
+.block-container [data-testid="stSelectbox"] input,
+.block-container [data-testid="stMultiSelect"] input,
+.block-container [data-baseweb="select"] div,
+.block-container [data-baseweb="select"] span {
+    color: #e8f1fb !important;
+    -webkit-text-fill-color: #e8f1fb !important;
+    background: transparent !important;
+    font-size: var(--field-font-size, 0.95rem) !important;
+    font-weight: 560 !important;
+}
+
+.block-container [data-testid="stTextInput"] input::placeholder,
+.block-container [data-testid="stTextArea"] textarea::placeholder,
+.block-container [data-testid="stDateInput"] input::placeholder {
+    color: rgba(199, 213, 230, 0.72) !important;
+    -webkit-text-fill-color: rgba(199, 213, 230, 0.72) !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"]:hover,
+.block-container [data-testid="stTextInputRootElement"]:hover,
+.block-container [data-testid="stTextAreaRootElement"]:hover,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stNumberInputContainer"]:hover,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"]:hover,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"]:hover {
+    border-color: rgba(116, 177, 225, 0.42) !important;
+    background: #101d2f !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.04),
+        0 10px 20px rgba(2, 8, 18, 0.18) !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"]:focus-within,
+.block-container [data-testid="stTextInputRootElement"]:focus-within,
+.block-container [data-testid="stTextAreaRootElement"]:focus-within,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stNumberInputContainer"]:focus-within,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"]:focus-within,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"]:focus-within {
+    border-color: rgba(125, 211, 252, 0.72) !important;
+    background: #101d2f !important;
+    box-shadow:
+        0 0 0 3px rgba(125, 211, 252, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 12px 22px rgba(2, 8, 18, 0.2) !important;
+}
+
+.block-container [data-baseweb="select"] svg,
+.block-container [data-testid="stDateInput"] svg,
+.block-container button[title="Show password text"] svg,
+.block-container button[title="Hide password text"] svg,
+.block-container button[aria-label="Show password text"] svg,
+.block-container button[aria-label="Hide password text"] svg {
+    color: rgba(199, 213, 230, 0.76) !important;
+    fill: rgba(199, 213, 230, 0.76) !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"],
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"],
+.block-container [data-testid="stTextInputRootElement"],
+.block-container [data-testid="stTextAreaRootElement"],
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"],
+.block-container [data-testid="stNumberInputContainer"],
+.block-container [data-testid="stDateInput"] [data-baseweb="input"],
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"],
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"] {
+    isolation: isolate !important;
+    background-color: #0d1726 !important;
+    background-image: none !important;
+    background-clip: border-box !important;
+    outline: 1px solid rgba(116, 177, 225, 0.16) !important;
+    outline-offset: -1px !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"] *,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"] *,
+.block-container [data-testid="stTextInputRootElement"] *,
+.block-container [data-testid="stTextAreaRootElement"] *,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"] *,
+.block-container [data-testid="stNumberInputContainer"] *,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"] *,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"] *,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"] * {
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"] > *,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"] > *,
+.block-container [data-testid="stTextInputRootElement"] > *,
+.block-container [data-testid="stTextAreaRootElement"] > *,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"] > *,
+.block-container [data-testid="stNumberInputContainer"] > *,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"] > *,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"] > *,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"] > * {
+    border-radius: inherit !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"]:hover,
+.block-container [data-testid="stTextInputRootElement"]:hover,
+.block-container [data-testid="stTextAreaRootElement"]:hover,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stNumberInputContainer"]:hover,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"]:hover,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"]:hover,
+.block-container [data-testid="stTextInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"]:focus-within,
+.block-container [data-testid="stTextInputRootElement"]:focus-within,
+.block-container [data-testid="stTextAreaRootElement"]:focus-within,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stNumberInputContainer"]:focus-within,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"]:focus-within,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"]:focus-within {
+    background-color: #101d2f !important;
+    background-image: none !important;
+}
+
+/* ==========================================================================
+   FIELD LAYER FLATTENING
+   The real DOM layers stay, but only the Date/Select-style inner shell is
+   allowed to be visible. Outer Streamlit wrappers become transparent.
+   ========================================================================== */
+
+.block-container [data-testid="stTextInputRootElement"],
+.block-container [data-testid="stNumberInputContainer"] {
+    overflow: visible !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"],
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"],
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"],
+.block-container [data-testid="stDateInput"] [data-baseweb="input"],
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"],
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"],
+.block-container [data-testid="stTextAreaRootElement"] {
+    overflow: hidden !important;
+    min-height: 52px !important;
+    border: 1px solid rgba(116, 177, 225, 0.28) !important;
+    border-radius: 14px !important;
+    outline: 0 !important;
+    background: #0d1726 !important;
+    background-color: #0d1726 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+.block-container [data-testid="stTextAreaRootElement"] {
+    min-height: 112px !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"]:hover,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"]:hover,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"]:hover,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"]:hover,
+.block-container [data-testid="stTextAreaRootElement"]:hover {
+    border-color: rgba(196, 230, 255, 0.38) !important;
+    background: #101d2f !important;
+    background-color: #101d2f !important;
+    background-image: none !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.018) !important;
+}
+
+.block-container [data-testid="stTextInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stTextInput"] [data-baseweb="base-input"]:focus-within,
+.block-container [data-testid="stNumberInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stDateInput"] [data-baseweb="input"]:focus-within,
+.block-container [data-testid="stSelectbox"] [data-baseweb="select"]:focus-within,
+.block-container [data-testid="stMultiSelect"] [data-baseweb="select"]:focus-within,
+.block-container [data-testid="stTextAreaRootElement"]:focus-within {
+    border-color: rgba(196, 230, 255, 0.58) !important;
+    background: #101d2f !important;
+    background-color: #101d2f !important;
+    background-image: none !important;
+    box-shadow:
+        0 0 0 1px rgba(125, 211, 252, 0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.022) !important;
+}
+
+.block-container [data-testid="stTextInputRootElement"]:focus-within,
+.block-container [data-testid="stNumberInputContainer"]:focus-within {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
