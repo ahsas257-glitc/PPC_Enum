@@ -768,21 +768,21 @@ def render_projects_page() -> None:
 
             overview_col1, overview_col2 = st.columns(2)
             with overview_col1:
-                with st.container(key="project_overview_type_shell"):
+                with st.container(key="project_overview_type_shell", border=True):
                     render_panel_intro(
                         "Project Types",
                         "Understand where delivery volume is concentrated by project type.",
                         eyebrow="Mix",
                     )
-                    render_table(type_overview_frame, max_visible_rows=6)
+                    render_table(type_overview_frame, max_visible_rows=max(len(type_overview_frame), 1))
             with overview_col2:
-                with st.container(key="project_overview_client_shell"):
+                with st.container(key="project_overview_client_shell", border=True):
                     render_panel_intro(
                         "Client Portfolio",
                         "See which clients hold the largest number of active and planned projects.",
                         eyebrow="Clients",
                     )
-                    render_table(client_overview_frame, max_visible_rows=6)
+                    render_table(client_overview_frame, max_visible_rows=max(len(client_overview_frame), 1))
 
             render_panel_intro(
                 "Project Directory",
