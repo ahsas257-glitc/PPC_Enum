@@ -6,8 +6,6 @@ from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype
 from pandas.io.formats.style import Styler
 import streamlit as st
 
-from app.design.components.cards import _render_html
-
 
 _TABLE_RENDER_INDEX = 0
 _STATUS_TOKENS = ("status", "state")
@@ -16,30 +14,10 @@ _DATE_SUFFIXES = ("_date", "_at")
 _ACTIVE_COLUMNS = {"is_active", "active", "is_current_active"}
 
 
-def _table_shell_key() -> str:
-    global _TABLE_RENDER_INDEX
-    _TABLE_RENDER_INDEX += 1
-    return f"table_shell_{_TABLE_RENDER_INDEX}"
-
-
 def _table_frame_key() -> str:
     global _TABLE_RENDER_INDEX
     _TABLE_RENDER_INDEX += 1
     return f"table_frame_{_TABLE_RENDER_INDEX}"
-
-
-def _table_metrics_markup(frame: pd.DataFrame) -> str:
-    row_label = f"{len(frame):,} rows"
-    column_label = f"{len(frame.columns):,} columns"
-    return (
-        '<div class="table-shell-header">'
-        '<div class="table-shell-header__eyebrow">Data View</div>'
-        '<div class="table-shell-header__meta">'
-        f'<span class="table-shell-pill">{row_label}</span>'
-        f'<span class="table-shell-pill">{column_label}</span>'
-        "</div>"
-        "</div>"
-    )
 
 
 def _humanize_label(column_name: str) -> str:
@@ -194,29 +172,26 @@ def render_table(
     frame = data if isinstance(data, pd.DataFrame) else pd.DataFrame(data)
     frame_key = _table_frame_key()
 
-    with st.container(key=_table_shell_key()):
-        _render_html(_table_metrics_markup(frame))
+    with st.container(key=frame_key):
+        if frame.empty:
+            st.dataframe(frame, width=width, hide_index=True, height=112)
+            return
 
-        with st.container(key=frame_key):
-            if frame.empty:
-                st.dataframe(frame, width=width, hide_index=True, height=112)
-                return
-
-            if len(frame) > max_render_rows:
-                st.caption(
-                    f"Performance mode: showing first {max_render_rows:,} rows out of {len(frame):,} rows for smoother UI."
-                )
-                frame = frame.head(max_render_rows)
-
-            table_data, column_config = _style_table(frame)
-            visible_rows = min(max(len(frame), 1), max_visible_rows)
-            table_height = 44 + (visible_rows * row_height) + 2
-
-            st.dataframe(
-                table_data,
-                width=width,
-                hide_index=True,
-                height=table_height,
-                row_height=row_height,
-                column_config=column_config,
+        if len(frame) > max_render_rows:
+            st.caption(
+                f"Performance mode: showing first {max_render_rows:,} rows out of {len(frame):,} rows for smoother UI."
             )
+            frame = frame.head(max_render_rows)
+
+        table_data, column_config = _style_table(frame)
+        visible_rows = min(max(len(frame), 1), max_visible_rows)
+        table_height = 44 + (visible_rows * row_height) + 2
+
+        st.dataframe(
+            table_data,
+            width=width,
+            hide_index=True,
+            height=table_height,
+            row_height=row_height,
+            column_config=column_config,
+        )

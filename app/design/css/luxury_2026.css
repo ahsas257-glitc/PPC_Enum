@@ -111,7 +111,6 @@ div[data-testid="stForm"],
 [class*="st-key-assignment_conflict_shell"],
 [class*="st-key-assignment_details_shell"],
 [class*="st-key-project_overview_export_shell"],
-[class*="st-key-table_shell_"],
 [data-testid="stExpander"] details,
 [data-baseweb="tab-list"] {
     border-radius: 8px !important;
@@ -157,7 +156,6 @@ div[data-testid="stForm"]::before {
 .panel-intro:hover,
 .auth-stage:hover,
 [class*="st-key-dashboard_panel_"]:hover,
-[class*="st-key-table_shell_"]:hover,
 [data-testid="stExpander"] details:hover {
     transform: translateY(-2px) !important;
     border-color: rgba(242, 244, 248, 0.20) !important;
@@ -176,8 +174,7 @@ h6,
 .auth-stage h3,
 .panel-intro h3,
 .showcase-card-title,
-.dashboard-panel-head h3,
-.table-shell-header strong {
+.dashboard-panel-head h3 {
     letter-spacing: 0 !important;
     text-wrap: balance;
 }
@@ -189,8 +186,6 @@ h6,
 .stat-band-chip strong,
 .dashboard-panel-head h3,
 .dashboard-panel-head p,
-.table-shell-header strong,
-.table-shell-header__meta,
 [data-testid="stCaptionContainer"] p {
     max-width: 100% !important;
     white-space: nowrap !important;
@@ -302,8 +297,9 @@ div[data-testid="stFormSubmitButton"] button:hover,
 [data-testid="stTable"],
 .stDataFrame {
     border-radius: 8px !important;
-    border-color: rgba(242, 244, 248, 0.12) !important;
-    background: rgba(8, 9, 12, 0.42) !important;
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 [data-testid="stDataFrame"] [role="grid"],
@@ -455,7 +451,6 @@ body.sidebar-auto-open .block-container {
 .dashboard-audit-row,
 .dashboard-spotlight-list__item,
 .dashboard-feed-row,
-[class*="st-key-table_shell_"],
 [class*="st-key-dashboard_panel_"],
 [class*="st-key-assignment_scope_shell"],
 [class*="st-key-assignment_coverage_shell"],
@@ -531,7 +526,6 @@ div[data-testid="stForm"],
 }
 
 [class*="st-key-dashboard_panel_"],
-[class*="st-key-table_shell_"],
 [class*="st-key-assignment_scope_shell"],
 [class*="st-key-assignment_coverage_shell"],
 [class*="st-key-assignment_selection_shell"],
@@ -561,7 +555,6 @@ div[data-testid="stForm"] {
 }
 
 .dashboard-panel-head,
-.table-shell-header,
 .panel-intro-row {
     min-height: 0 !important;
     margin-bottom: 0.5rem !important;
@@ -622,9 +615,7 @@ div[data-testid="stForm"] {
 .dashboard-panel-head p,
 .dashboard-signal-card span,
 .dashboard-signal-card strong,
-.dashboard-signal-card small,
-.table-shell-header strong,
-.table-shell-header__meta {
+.dashboard-signal-card small {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;

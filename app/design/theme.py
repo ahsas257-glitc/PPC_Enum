@@ -43,6 +43,7 @@ CSS_FILE_ORDER: Final[tuple[str, ...]] = (
     "responsive.css",
     "luxury_2026.css",
     "mobile_fast.css",
+    "sidebar_behavior.css",
 )
 
 CSS_FILES: Final[tuple[Path, ...]] = tuple(CSS_DIR / name for name in CSS_FILE_ORDER)

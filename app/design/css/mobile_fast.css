@@ -347,7 +347,6 @@
         max-width: 82vw !important;
         min-width: 0 !important;
         box-shadow: 10px 0 26px rgba(0, 0, 0, 0.24) !important;
-        transform: none;
     }
 
     [data-testid="stSidebar"] > div:first-child {

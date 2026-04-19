@@ -734,7 +734,7 @@ def render_dashboard_page() -> None:
 
     st.html(_build_command_deck_html(metrics, role))
 
-    overview_left, overview_right = st.columns([1.12, 1], gap="large")
+    overview_left, overview_right = st.columns(2, gap="large")
     with overview_left:
         _render_chart_panel(
             key="dashboard_panel_project_load",
@@ -766,7 +766,7 @@ def render_dashboard_page() -> None:
             empty_message="Surveyor coverage will appear after surveyors are added.",
         )
 
-    portfolio_left, portfolio_right = st.columns([1.12, 1], gap="large")
+    portfolio_left, portfolio_right = st.columns(2, gap="large")
     with portfolio_left:
         _render_chart_panel(
             key="dashboard_panel_client_mix",
@@ -813,7 +813,7 @@ def render_dashboard_page() -> None:
         )
 
     if full_view:
-        governance_left, governance_right = st.columns([1.18, 1], gap="large")
+        governance_left, governance_right = st.columns(2, gap="large")
         with governance_left:
             _render_chart_panel(
                 key="dashboard_panel_audit_flow",

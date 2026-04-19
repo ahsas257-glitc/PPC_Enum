@@ -1,28 +1,12 @@
-[class*="st-key-table_shell_"] {
-    position: relative !important;
-    z-index: 2 !important;
-    isolation: isolate !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin-top: 0.42rem !important;
-    margin-bottom: 1.05rem !important;
-}
-
-[class*="st-key-table_shell_"] > div {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-}
-
 [class*="st-key-table_frame_"] {
     position: relative !important;
     z-index: 2 !important;
-    isolation: isolate !important;
+    isolation: auto !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    margin-bottom: 0.3rem !important;
+    margin-top: 0.1rem !important;
+    margin-bottom: 0.7rem !important;
 }
 
 [class*="st-key-table_frame_"] > div {
@@ -33,71 +17,21 @@
 
 [class*="st-key-table_frame_"] [data-testid="stFullScreenFrame"]:not([style*="position: fixed"]) {
     display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
 }
 
 [class*="st-key-table_frame_"] [data-testid="stFullScreenFrame"]:not([style*="position: fixed"]) > * {
-    width: min(97%, 100%) !important;
+    width: 100% !important;
     max-width: 100% !important;
-    margin-inline: auto !important;
-}
-
-.table-shell-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.9rem;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    margin: 0 0 0.22rem;
-    padding: 0.08rem 0.12rem 0;
-}
-
-.table-shell-header__eyebrow {
-    color: rgba(223, 238, 251, 0.72);
-    font-size: 0.66rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.table-shell-header__meta {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.42rem;
-    min-width: 0;
-}
-
-.table-shell-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 24px;
-    padding: 0.22rem 0.58rem;
-    border-radius: 999px;
-    border: 1px solid rgba(151, 192, 230, 0.12);
-    background:
-        linear-gradient(180deg, rgba(19, 33, 52, 0.88), rgba(10, 18, 30, 0.94)),
-        rgba(8, 13, 22, 0.88);
-    color: rgba(234, 244, 252, 0.88);
-    font-size: 0.68rem;
-    font-weight: 700;
-    line-height: 1;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.05),
-        0 10px 22px rgba(1, 8, 18, 0.14);
-    white-space: nowrap;
+    margin-inline: 0 !important;
 }
 
 /* ==========================================================================
-   TABLE SHELL
+   DATAFRAMES
    ========================================================================== */
 
 [data-testid="stDataFrame"],
@@ -105,45 +39,31 @@
 .stDataFrame {
     position: relative;
     z-index: 2 !important;
-    overflow: hidden;
+    overflow: auto;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
     margin-top: 0;
-    padding: 0.42rem 0.5rem 0.46rem;
-    border-radius: 20px !important;
-    border: 1px solid var(--stroke) !important;
-    background:
-        linear-gradient(160deg, rgba(19, 31, 49, 0.9), rgba(9, 15, 25, 0.94)),
-        rgba(7, 12, 20, 0.88) !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.06),
-        inset 0 -1px 0 rgba(255,255,255,0.012),
-        0 22px 52px rgba(1, 8, 18, 0.22) !important;
-    isolation: isolate;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    isolation: auto;
 }
 
 [class*="st-key-table_frame_"] [data-testid="stDataFrame"],
 [class*="st-key-table_frame_"] [data-testid="stTable"],
 [class*="st-key-table_frame_"] .stDataFrame {
-    width: min(97%, calc(100% - 0.35rem)) !important;
-    margin-inline: auto !important;
+    width: 100% !important;
+    margin-inline: 0 !important;
 }
 
 [data-testid="stDataFrame"]::before,
 [data-testid="stTable"]::before,
 .stDataFrame::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    background:
-        linear-gradient(120deg, rgba(255,255,255,0.06), transparent 34%, rgba(121, 220, 255, 0.045) 62%, transparent 100%),
-        radial-gradient(circle at top right, rgba(106, 168, 255, 0.08), transparent 28%);
-    opacity: 0.9;
-    z-index: 0;
+    display: none !important;
 }
 
 [data-testid="stDataFrame"] > *,
@@ -174,13 +94,10 @@
     max-width: 100%;
     min-width: var(--table-min-width, 720px) !important;
     overflow: auto !important;
-    border-radius: 18px !important;
-    background:
-        linear-gradient(180deg, rgba(8, 17, 29, 0.92), rgba(7, 14, 24, 0.96)) !important;
-    border: 1px solid rgba(151, 192, 230, 0.09) !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.03),
-        0 12px 28px rgba(1, 8, 18, 0.12) !important;
+    border-radius: 8px !important;
+    background: rgba(7, 12, 20, 0.68) !important;
+    border: 1px solid rgba(151, 192, 230, 0.12) !important;
+    box-shadow: none !important;
 }
 
 [data-testid="stDataFrame"] [data-testid="stDataFrameResizable"],
@@ -193,7 +110,7 @@
 }
 
 [class*="st-key-table_frame_"] .stDataFrameGlideDataEditor {
-    transform: scale(0.985);
+    transform: none !important;
     transform-origin: top center;
 }
 
@@ -233,12 +150,11 @@
 [data-testid="stDataFrame"] [role="columnheader"],
 [data-testid="stTable"] thead tr th {
     position: relative;
-    background:
-        linear-gradient(180deg, rgba(14, 26, 42, 0.98), rgba(11, 21, 35, 0.96)) !important;
+    background: rgba(17, 24, 38, 0.94) !important;
     color: var(--text) !important;
     font-size: 0.76rem !important;
     font-weight: 800 !important;
-    letter-spacing: 0.06em !important;
+    letter-spacing: 0 !important;
     text-transform: uppercase;
     border-bottom: 1px solid rgba(151, 192, 230, 0.10) !important;
     box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02);
@@ -342,33 +258,17 @@
    ========================================================================== */
 
 @media (max-width: 768px) {
-    [class*="st-key-table_shell_"] {
-        margin-top: 0.34rem !important;
-        margin-bottom: 0.9rem !important;
-    }
-
-    .table-shell-header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.48rem;
-        margin-bottom: 0.32rem;
-    }
-
-    .table-shell-header__meta {
-        justify-content: flex-start;
-    }
-
     [data-testid="stDataFrame"],
     [data-testid="stTable"],
     .stDataFrame {
         margin-top: 0;
-        padding: 0.4rem 0.42rem 0.42rem;
-        border-radius: 16px !important;
+        padding: 0 !important;
+        border-radius: 8px !important;
     }
 
     [data-testid="stDataFrame"] [role="grid"],
     [data-testid="stTable"] table {
-        border-radius: 14px !important;
+        border-radius: 8px !important;
     }
 
     [data-testid="stDataFrame"] [role="columnheader"],

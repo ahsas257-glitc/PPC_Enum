@@ -1,0 +1,150 @@
+/* ==========================================================================
+   SIDEBAR BEHAVIOR
+   Desktop uses a zero-footprint overlay rail. Mobile keeps a fixed drawer.
+   ========================================================================== */
+
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+    body.sidebar-hover-enabled {
+        --sidebar-compact-peek: 0rem;
+        --sidebar-hover-peek: 0rem;
+    }
+
+    body.sidebar-hover-enabled .stApp,
+    body.sidebar-hover-enabled [data-testid="stAppViewContainer"] {
+        display: block !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        overflow-x: clip !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stAppViewContainer"] > .main,
+    body.sidebar-hover-enabled [data-testid="stMain"],
+    body.sidebar-hover-enabled section[data-testid="stMain"],
+    body.sidebar-hover-enabled section.main,
+    body.sidebar-hover-enabled main {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        flex: 0 0 100vw !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stMainBlockContainer"] {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    body.sidebar-hover-enabled .block-container,
+    body.sidebar-hover-enabled.sidebar-auto-hidden .block-container,
+    body.sidebar-hover-enabled.sidebar-force-collapsed .block-container {
+        width: min(100%, 1640px) !important;
+        max-width: min(1640px, calc(100vw - 0.64rem)) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"] {
+        position: fixed !important;
+        inset: 0 auto 0 0 !important;
+        z-index: 130 !important;
+        flex: 0 0 0 !important;
+        width: var(--sidebar-compact-width, 11.85rem) !important;
+        min-width: var(--sidebar-compact-width, 11.85rem) !important;
+        max-width: var(--sidebar-compact-width, 11.85rem) !important;
+        margin: 0 !important;
+        transform: translate3d(-100%, 0, 0) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"]::before {
+        opacity: 0 !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:hover,
+    body.sidebar-hover-enabled [data-testid="stSidebar"]:focus-within,
+    body.sidebar-hover-enabled.sidebar-auto-open [data-testid="stSidebar"],
+    body.sidebar-hover-enabled.sidebar-auto-open [data-testid="stSidebar"]:hover,
+    body.sidebar-hover-enabled.sidebar-auto-open [data-testid="stSidebar"]:focus-within {
+        transform: translate3d(0, 0, 0) !important;
+        background: var(--app-sidebar-bg) !important;
+        box-shadow:
+            18px 0 48px rgba(0, 0, 0, 0.28),
+            inset -1px 0 0 rgba(255, 255, 255, 0.045) !important;
+    }
+
+    body.sidebar-hover-enabled.sidebar-auto-hidden [data-testid="stSidebar"],
+    body.sidebar-hover-enabled.sidebar-force-collapsed [data-testid="stSidebar"],
+    body.sidebar-hover-enabled.sidebar-force-collapsed [data-testid="stSidebar"]:hover,
+    body.sidebar-hover-enabled.sidebar-force-collapsed [data-testid="stSidebar"]:focus-within {
+        transform: translate3d(-100%, 0, 0) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    body.sidebar-hover-enabled [data-testid="collapsedControl"],
+    body.sidebar-hover-enabled [data-testid="stSidebarCollapseButton"],
+    body.sidebar-hover-enabled button[title="Open sidebar"],
+    body.sidebar-hover-enabled button[title="Close sidebar"],
+    body.sidebar-hover-enabled button[aria-label="Open sidebar"],
+    body.sidebar-hover-enabled button[aria-label="Close sidebar"] {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+    body {
+        --sidebar-compact-peek: 0rem;
+        --sidebar-hover-peek: 0rem;
+    }
+
+    body.sidebar-hover-enabled,
+    body.sidebar-auto-hidden,
+    body.sidebar-auto-open,
+    body.sidebar-force-collapsed {
+        --sidebar-compact-peek: 0rem;
+        --sidebar-hover-peek: 0rem;
+    }
+
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewContainer"] > .main,
+    [data-testid="stMain"],
+    section[data-testid="stMain"],
+    main {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    [data-testid="stSidebar"] {
+        position: fixed !important;
+        inset: 0 auto 0 0 !important;
+        z-index: 220 !important;
+        width: min(82vw, 17rem) !important;
+        min-width: 0 !important;
+        max-width: 82vw !important;
+    }
+
+    [data-testid="stSidebar"] > div:first-child {
+        min-height: 100dvh !important;
+        max-height: 100dvh !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapseButton"],
+    button[title="Open sidebar"],
+    button[title="Close sidebar"],
+    button[aria-label="Open sidebar"],
+    button[aria-label="Close sidebar"] {
+        display: inline-flex !important;
+    }
+}
