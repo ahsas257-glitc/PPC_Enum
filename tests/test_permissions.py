@@ -17,10 +17,13 @@ class PermissionRegistryTests(unittest.TestCase):
         manager_labels = [page["label"] for page in pages_for_role("manager")]
         self.assertIn("Search & Reports", admin_labels)
         self.assertIn("Search & Reports", manager_labels)
+        self.assertIn("CV Generator", admin_labels)
+        self.assertIn("CV Generator", manager_labels)
 
     def test_search_reports_is_not_available_to_viewers(self) -> None:
         viewer_labels = [page["label"] for page in pages_for_role("viewer")]
         self.assertNotIn("Search & Reports", viewer_labels)
+        self.assertNotIn("CV Generator", viewer_labels)
 
 
 if __name__ == "__main__":

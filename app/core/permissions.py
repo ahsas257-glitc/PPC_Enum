@@ -9,6 +9,7 @@ PAGE_ORDER = [
     "Dashboard",
     "Projects",
     "Surveyors",
+    "CV Generator",
     "Banks",
     "Bank Accounts",
     "Users",
@@ -34,6 +35,12 @@ PAGE_REGISTRY = {
         "roles": {"super_admin", "admin", "manager"},
         "module": "app.pages.admin.surveyors_page",
         "renderer_name": "render_surveyors_page",
+    },
+    "CV Generator": {
+        "label": "CV Generator",
+        "roles": {"super_admin", "admin", "manager"},
+        "module": "app.pages.admin.cv_generator_page",
+        "renderer_name": "render_cv_generator_page",
     },
     "Search & Reports": {
         "label": "Search & Reports",

@@ -23,6 +23,7 @@ class AppSmokeTests(unittest.TestCase):
             "Dashboard",
             "Projects",
             "Surveyors",
+            "CV Generator",
             "Banks",
             "Bank Accounts",
             "Users",

@@ -1,5 +1,7 @@
 from app.core.audit import log_audit_event
 from app.core.database import transaction
+from app.repositories.bank_account_repository import BankAccountRepository
+from app.repositories.project_repository import ProjectRepository
 from app.repositories.surveyor_repository import SurveyorRepository
 
 
@@ -24,6 +26,16 @@ class SurveyorService:
 
     def get_profile_detail(self, surveyor_id: int) -> dict | None:
         return self.repository.get_profile_detail(surveyor_id)
+
+    def get_cv_context(self, surveyor_id: int) -> dict | None:
+        profile = self.repository.get_profile_detail(surveyor_id)
+        if not profile:
+            return None
+        return {
+            "profile": profile,
+            "bank_accounts": BankAccountRepository().list_for_surveyor(surveyor_id),
+            "assignments": ProjectRepository().list_assignments_for_surveyor(surveyor_id, limit=200),
+        }
 
     def create_surveyor(self, actor: dict, payload: dict) -> dict:
         province_code = payload["permanent_province_code"]
