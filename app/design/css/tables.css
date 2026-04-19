@@ -6,13 +6,15 @@
     max-width: 100% !important;
     min-width: 0 !important;
     margin-top: 0 !important;
-    margin-bottom: 0.45rem !important;
+    margin-bottom: 0.2rem !important;
 }
 
 [class*="st-key-table_frame_"] > div {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 [class*="st-key-table_frame_"] [data-testid="stFullScreenFrame"]:not([style*="position: fixed"]) {
@@ -92,7 +94,7 @@
 [data-testid="stTable"] table {
     width: 100%;
     max-width: 100%;
-    min-width: var(--table-min-width, 640px) !important;
+    min-width: var(--table-min-width, 600px) !important;
     overflow: auto !important;
     border-radius: 8px !important;
     background: rgba(7, 12, 20, 0.68) !important;
@@ -152,7 +154,7 @@
     position: relative;
     background: rgba(17, 24, 38, 0.94) !important;
     color: var(--text) !important;
-    font-size: 0.72rem !important;
+    font-size: 0.68rem !important;
     font-weight: 800 !important;
     letter-spacing: 0 !important;
     text-transform: uppercase;
@@ -179,8 +181,8 @@
     color: var(--text-soft) !important;
     background: transparent !important;
     border-color: rgba(151, 192, 230, 0.07) !important;
-    font-size: 0.82rem !important;
-    line-height: 1.24 !important;
+    font-size: 0.78rem !important;
+    line-height: 1.14 !important;
 }
 
 /* ==========================================================================
@@ -213,12 +215,12 @@
 
 [data-testid="stTable"] table th:first-child,
 [data-testid="stTable"] table td:first-child {
-    padding-left: 0.72rem !important;
+    padding-left: 0.58rem !important;
 }
 
 [data-testid="stTable"] table th:last-child,
 [data-testid="stTable"] table td:last-child {
-    padding-right: 0.72rem !important;
+    padding-right: 0.58rem !important;
 }
 
 /* ==========================================================================
@@ -273,13 +275,13 @@
 
     [data-testid="stDataFrame"] [role="columnheader"],
     [data-testid="stTable"] thead tr th {
-        font-size: 0.68rem !important;
+        font-size: 0.64rem !important;
     }
 
     [data-testid="stDataFrame"] [role="gridcell"],
     [data-testid="stTable"] tbody tr td {
-        font-size: 0.78rem !important;
-        line-height: 1.2 !important;
+        font-size: 0.74rem !important;
+        line-height: 1.12 !important;
     }
 }
 
