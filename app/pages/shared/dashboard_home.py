@@ -178,6 +178,62 @@ def _panel_header_html(title: str, meta: str, *, eyebrow: str, pills: list[str] 
     """
 
 
+def _build_bar_chart_html(frame: pd.DataFrame, *, accent_color: str) -> str:
+    if frame.empty:
+        return ""
+
+    rows = frame.head(8).to_dict(orient="records")
+    max_total = max((_safe_int(row.get("total")) for row in rows), default=0) or 1
+    row_markup = []
+    for row in rows:
+        label = str(row.get("label") or "Unknown")
+        total = _safe_int(row.get("total"))
+        width = 2 if total <= 0 else max(8, round((total / max_total) * 100))
+        row_markup.append(
+            f"""
+            <div class="dashboard-bar-row" aria-label="{escape(label)}: {escape(str(total))}">
+                <div class="dashboard-bar-row__top">
+                    <span title="{escape(label)}">{escape(label)}</span>
+                    <strong>{escape(_format_compact_number(total))}</strong>
+                </div>
+                <div class="dashboard-bar-track">
+                    <div class="dashboard-bar-fill" style="width:{width}%"></div>
+                </div>
+            </div>
+            """
+        )
+
+    return (
+        f'<div class="dashboard-lite-chart dashboard-bar-chart" '
+        f'style="--chart-accent:{escape(accent_color)}">'
+        f'{"".join(row_markup)}</div>'
+    )
+
+
+def _build_trend_chart_html(frame: pd.DataFrame) -> str:
+    if frame.empty:
+        return ""
+
+    rows = frame.tail(14).to_dict(orient="records")
+    max_total = max((_safe_int(row.get("total")) for row in rows), default=0) or 1
+    bars = []
+    for row in rows:
+        label = str(row.get("day_label") or row.get("day") or "")
+        total = _safe_int(row.get("total"))
+        height = 4 if total <= 0 else max(10, round((total / max_total) * 100))
+        bars.append(
+            f"""
+            <div class="dashboard-trend-item" aria-label="{escape(label)}: {escape(str(total))}">
+                <div class="dashboard-trend-bar" style="height:{height}%"></div>
+                <strong>{escape(_format_compact_number(total))}</strong>
+                <span>{escape(label)}</span>
+            </div>
+            """
+        )
+
+    return f'<div class="dashboard-lite-chart dashboard-trend-chart">{"".join(bars)}</div>'
+
+
 def _build_command_deck_html(metrics: dict[str, object], role: str) -> str:
     config = _scope_config(role)
     total_users = _safe_int(metrics.get("total_users"))
@@ -626,13 +682,16 @@ def _render_chart_panel(
     eyebrow: str,
     frame: pd.DataFrame,
     spec: dict | None,
+    chart_html: str = "",
     pills: list[str] | None = None,
     empty_message: str = "No chart data available yet.",
 ) -> None:
     with st.container(key=key):
         st.html(_panel_header_html(title, meta, eyebrow=eyebrow, pills=pills))
-        if frame.empty or spec is None:
+        if frame.empty or (spec is None and not chart_html):
             st.info(empty_message)
+        elif chart_html:
+            st.html(chart_html)
         else:
             st.vega_lite_chart(spec, width="stretch")
 
@@ -683,7 +742,8 @@ def render_dashboard_page() -> None:
             meta="Active assignments by project.",
             eyebrow="Projects",
             frame=project_load_mix,
-            spec=_distribution_spec(project_load_mix, accent_color="#6aa8ff") if not project_load_mix.empty else None,
+            spec=None,
+            chart_html=_build_bar_chart_html(project_load_mix, accent_color="#6aa8ff"),
             pills=[
                 f"{_format_compact_number(metrics.get('current_assignments'))} active assignments",
                 f"{len(project_load_mix):,} live project bands",
@@ -697,7 +757,8 @@ def render_dashboard_page() -> None:
             meta="Surveyors by province.",
             eyebrow="Surveyors",
             frame=surveyor_province_mix,
-            spec=_distribution_spec(surveyor_province_mix, accent_color="#87f1e3") if not surveyor_province_mix.empty else None,
+            spec=None,
+            chart_html=_build_bar_chart_html(surveyor_province_mix, accent_color="#87f1e3"),
             pills=[
                 f"{_format_compact_number(metrics.get('total_surveyors'))} surveyors",
                 f"{len(surveyor_province_mix):,} province bands",
@@ -713,7 +774,8 @@ def render_dashboard_page() -> None:
             meta="Projects by client.",
             eyebrow="Portfolio",
             frame=client_mix,
-            spec=_distribution_spec(client_mix, accent_color="#79dcff") if not client_mix.empty else None,
+            spec=None,
+            chart_html=_build_bar_chart_html(client_mix, accent_color="#79dcff"),
             pills=[f"{_format_compact_number(metrics.get('total_projects'))} total projects"],
             empty_message="Client concentration will appear after projects are registered.",
         )
@@ -724,7 +786,8 @@ def render_dashboard_page() -> None:
             meta="Projects by status.",
             eyebrow="Status",
             frame=project_status_mix,
-            spec=_distribution_spec(project_status_mix, accent_color="#5fb3ff") if not project_status_mix.empty else None,
+            spec=None,
+            chart_html=_build_bar_chart_html(project_status_mix, accent_color="#5fb3ff"),
             pills=[f"{_format_compact_number(metrics.get('active_projects'))} active projects"],
             empty_message="Project lifecycle data will appear after projects are created.",
         )
@@ -758,7 +821,8 @@ def render_dashboard_page() -> None:
                 meta="Last 14 days.",
                 eyebrow="Audit",
                 frame=audit_trend,
-                spec=_time_series_spec(audit_trend) if not audit_trend.empty else None,
+                spec=None,
+                chart_html=_build_trend_chart_html(audit_trend),
                 pills=[
                     f"{_format_compact_number(metrics.get('total_audit_logs'))} total logs",
                     f"{audit_trend['total'].sum():,} events in window" if not audit_trend.empty else "No recent events",
@@ -788,7 +852,8 @@ def render_dashboard_page() -> None:
                 meta="Users by role.",
                 eyebrow="Users",
                 frame=user_role_mix,
-                spec=_distribution_spec(user_role_mix, accent_color="#79dcff") if not user_role_mix.empty else None,
+                spec=None,
+                chart_html=_build_bar_chart_html(user_role_mix, accent_color="#79dcff"),
                 pills=[f"{_format_compact_number(metrics.get('total_users'))} users"],
                 empty_message="User role distribution will appear after accounts are created.",
             )
@@ -799,7 +864,8 @@ def render_dashboard_page() -> None:
                 meta="Bank vs mobile routing.",
                 eyebrow="Payout",
                 frame=payment_type_mix,
-                spec=_distribution_spec(payment_type_mix, accent_color="#87f1e3") if not payment_type_mix.empty else None,
+                spec=None,
+                chart_html=_build_bar_chart_html(payment_type_mix, accent_color="#87f1e3"),
                 pills=[f"{_format_compact_number(metrics.get('total_bank_accounts'))} payout channels"],
                 empty_message="Payout mix will appear after payout accounts are registered.",
             )

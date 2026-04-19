@@ -25,7 +25,7 @@ def inject_sidebar_hover_mode() -> None:
           const body = doc.body;
           if (!body) return;
 
-          const SIDEBAR_HOVER_VERSION = "2026-04-sidebar-v2";
+          const SIDEBAR_HOVER_VERSION = "2026-04-sidebar-v3";
           const desktopQuery = window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
           const AUTO_CLOSE_MS = 90;
           const EDGE_OPEN_PX = 34;
@@ -36,6 +36,23 @@ def inject_sidebar_hover_mode() -> None:
           ];
 
           const sidebarElement = () => doc.querySelector('[data-testid="stSidebar"]');
+
+          const clearTimers = () => {
+            window.clearTimeout(body.__sidebarAutoTimer);
+            window.clearTimeout(body.__sidebarForceTimer);
+          };
+
+          const resetMobileMode = () => {
+            clearTimers();
+            body.classList.remove("sidebar-hover-enabled");
+            body.classList.remove("sidebar-force-collapsed");
+            body.classList.remove("sidebar-auto-hidden");
+            body.classList.remove("sidebar-auto-open");
+            if (body.__sidebarHoverObserver) {
+              body.__sidebarHoverObserver.disconnect();
+              body.__sidebarHoverObserver = null;
+            }
+          };
 
           const openAutoSidebar = () => {
             if (!desktopQuery.matches) return;
@@ -122,14 +139,12 @@ def inject_sidebar_hover_mode() -> None:
           };
 
           const syncMode = () => {
-            body.classList.toggle("sidebar-hover-enabled", desktopQuery.matches);
             if (!desktopQuery.matches) {
-              body.classList.remove("sidebar-force-collapsed");
-              body.classList.remove("sidebar-auto-hidden");
-              body.classList.remove("sidebar-auto-open");
+              resetMobileMode();
               return;
             }
 
+            body.classList.add("sidebar-hover-enabled");
             const openButton =
               doc.querySelector('button[title="Open sidebar"]') ||
               doc.querySelector('button[aria-label="Open sidebar"]');
@@ -138,16 +153,22 @@ def inject_sidebar_hover_mode() -> None:
             }
             bindSidebarElement();
             window.requestAnimationFrame(bindSidebarElement);
+            if (!body.__sidebarHoverObserver) {
+              body.__sidebarHoverObserver = new MutationObserver(bindSidebarElement);
+              body.__sidebarHoverObserver.observe(body, { childList: true, subtree: true });
+            }
             closeAutoSidebar();
           };
 
-          syncMode();
-          if (body.dataset.sidebarHoverBound !== SIDEBAR_HOVER_VERSION) {
+          const bindDesktopHandlers = () => {
+            if (body.dataset.sidebarDesktopHandlersBound === SIDEBAR_HOVER_VERSION) return;
+            body.dataset.sidebarDesktopHandlersBound = SIDEBAR_HOVER_VERSION;
             if (body.__sidebarHoverObserver) {
               body.__sidebarHoverObserver.disconnect();
+              body.__sidebarHoverObserver = null;
             }
-            desktopQuery.addEventListener("change", syncMode);
             doc.addEventListener("change", (event) => {
+              if (!desktopQuery.matches) return;
               const sidebar = doc.querySelector('[data-testid="stSidebar"]');
               if (!sidebar || !sidebar.contains(event.target)) return;
               const radio = event.target.closest?.('[data-testid="stRadio"]');
@@ -156,6 +177,7 @@ def inject_sidebar_hover_mode() -> None:
               }
             }, true);
             doc.addEventListener("click", (event) => {
+              if (!desktopQuery.matches) return;
               const sidebar = sidebarElement();
               if (!sidebar || !sidebar.contains(event.target)) return;
               const navLabel = event.target.closest?.('[data-testid="stRadio"] label');
@@ -199,10 +221,27 @@ def inject_sidebar_hover_mode() -> None:
                 forceSidebarClosed();
               }
             }, true);
-            body.__sidebarHoverObserver = new MutationObserver(bindSidebarElement);
-            body.__sidebarHoverObserver.observe(body, { childList: true, subtree: true });
+          };
+
+          if (body.dataset.sidebarHoverBound !== SIDEBAR_HOVER_VERSION) {
             body.dataset.sidebarHoverBound = SIDEBAR_HOVER_VERSION;
+            const onQueryChange = () => {
+              if (desktopQuery.matches) {
+                bindDesktopHandlers();
+              }
+              syncMode();
+            };
+            if (desktopQuery.addEventListener) {
+              desktopQuery.addEventListener("change", onQueryChange);
+            } else if (desktopQuery.addListener) {
+              desktopQuery.addListener(onQueryChange);
+            }
           }
+
+          if (desktopQuery.matches) {
+            bindDesktopHandlers();
+          }
+          syncMode();
         })();
         </script>
         """
