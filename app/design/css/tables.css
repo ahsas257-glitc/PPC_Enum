@@ -5,8 +5,8 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    margin-top: 0.1rem !important;
-    margin-bottom: 0.7rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.45rem !important;
 }
 
 [class*="st-key-table_frame_"] > div {
@@ -92,7 +92,7 @@
 [data-testid="stTable"] table {
     width: 100%;
     max-width: 100%;
-    min-width: var(--table-min-width, 720px) !important;
+    min-width: var(--table-min-width, 640px) !important;
     overflow: auto !important;
     border-radius: 8px !important;
     background: rgba(7, 12, 20, 0.68) !important;
@@ -115,32 +115,32 @@
 }
 
 [class*="st-key-table_frame_"] .gdg-search-bar {
-    top: 0.18rem !important;
-    right: 0.18rem !important;
-    max-width: 16rem !important;
-    padding: 0.22rem 0.28rem !important;
-    border-radius: 10px !important;
+    top: 0.12rem !important;
+    right: 0.12rem !important;
+    max-width: 14rem !important;
+    padding: 0.16rem 0.22rem !important;
+    border-radius: 8px !important;
     transform: scale(0.94);
     transform-origin: top right;
     z-index: 4 !important;
 }
 
 [class*="st-key-table_frame_"] .gdg-search-bar button {
-    width: 28px !important;
-    height: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
 }
 
 [class*="st-key-table_frame_"] [data-testid="stElementToolbar"] {
-    top: 0.14rem !important;
-    right: 0.16rem !important;
+    top: 0.1rem !important;
+    right: 0.12rem !important;
     z-index: 4 !important;
 }
 
 [class*="st-key-table_frame_"] [data-testid="stElementToolbar"] button {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    min-height: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    min-height: 26px !important;
 }
 
 /* ==========================================================================
@@ -152,7 +152,7 @@
     position: relative;
     background: rgba(17, 24, 38, 0.94) !important;
     color: var(--text) !important;
-    font-size: 0.76rem !important;
+    font-size: 0.72rem !important;
     font-weight: 800 !important;
     letter-spacing: 0 !important;
     text-transform: uppercase;
@@ -179,8 +179,8 @@
     color: var(--text-soft) !important;
     background: transparent !important;
     border-color: rgba(151, 192, 230, 0.07) !important;
-    font-size: 0.88rem !important;
-    line-height: 1.42 !important;
+    font-size: 0.82rem !important;
+    line-height: 1.24 !important;
 }
 
 /* ==========================================================================
@@ -213,12 +213,12 @@
 
 [data-testid="stTable"] table th:first-child,
 [data-testid="stTable"] table td:first-child {
-    padding-left: 1rem !important;
+    padding-left: 0.72rem !important;
 }
 
 [data-testid="stTable"] table th:last-child,
 [data-testid="stTable"] table td:last-child {
-    padding-right: 1rem !important;
+    padding-right: 0.72rem !important;
 }
 
 /* ==========================================================================
@@ -273,12 +273,13 @@
 
     [data-testid="stDataFrame"] [role="columnheader"],
     [data-testid="stTable"] thead tr th {
-        font-size: 0.72rem !important;
+        font-size: 0.68rem !important;
     }
 
     [data-testid="stDataFrame"] [role="gridcell"],
     [data-testid="stTable"] tbody tr td {
-        font-size: 0.84rem !important;
+        font-size: 0.78rem !important;
+        line-height: 1.2 !important;
     }
 }
 

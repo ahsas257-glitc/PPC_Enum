@@ -167,14 +167,14 @@ def render_table(
     width: str = "stretch",
     max_render_rows: int = 400,
     max_visible_rows: int = 10,
-    row_height: int = 40,
+    row_height: int = 36,
 ) -> None:
     frame = data if isinstance(data, pd.DataFrame) else pd.DataFrame(data)
     frame_key = _table_frame_key()
 
     with st.container(key=frame_key):
         if frame.empty:
-            st.dataframe(frame, width=width, hide_index=True, height=112)
+            st.dataframe(frame, width=width, hide_index=True, height=96)
             return
 
         if len(frame) > max_render_rows:
@@ -185,7 +185,7 @@ def render_table(
 
         table_data, column_config = _style_table(frame)
         visible_rows = min(max(len(frame), 1), max_visible_rows)
-        table_height = 44 + (visible_rows * row_height) + 2
+        table_height = 38 + (visible_rows * row_height) + 2
 
         st.dataframe(
             table_data,
