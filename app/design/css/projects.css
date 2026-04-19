@@ -85,43 +85,95 @@
     margin-top: clamp(4.8rem, 6vw, 5.9rem) !important;
     margin-bottom: 0.7rem !important;
     box-sizing: border-box !important;
-    padding: 0.72rem 0.76rem 0.62rem !important;
+    padding: 0.82rem 0.86rem 0.72rem !important;
     border-radius: 8px !important;
-    border: 1px solid rgba(242, 244, 248, 0.115) !important;
+    border: 1px solid rgba(226, 238, 246, 0.14) !important;
     background:
-        linear-gradient(145deg, rgba(255,255,255,0.062), rgba(255,255,255,0.015) 44%, rgba(139,245,218,0.018)),
-        rgba(12, 13, 17, 0.78) !important;
+        linear-gradient(145deg, rgba(255,255,255,0.07), rgba(255,255,255,0.018) 42%, rgba(126, 219, 205, 0.03) 100%),
+        rgba(10, 12, 16, 0.88) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.055),
-        0 14px 34px rgba(0,0,0,0.23) !important;
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        inset 0 -1px 0 rgba(255,255,255,0.018),
+        0 18px 38px rgba(0,0,0,0.24) !important;
     overflow: visible !important;
     height: auto !important;
 }
 
 .project-overview-table-card__head {
-    margin: 0 0 0.34rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.74rem;
+    align-items: end;
+    margin: 0 0 0.58rem;
+    padding-bottom: 0.58rem;
+    border-bottom: 1px solid rgba(226, 238, 246, 0.08);
+}
+
+.project-overview-table-card__title {
+    min-width: 0;
 }
 
 .project-overview-table-card__eyebrow {
-    color: rgba(223, 238, 251, 0.68);
+    color: rgba(147, 229, 213, 0.78);
     font-size: 0.58rem;
     font-weight: 800;
-    letter-spacing: 0.055em;
+    letter-spacing: 0;
     text-transform: uppercase;
 }
 
 .project-overview-table-card h3 {
     margin: 0.18rem 0 0;
     color: var(--text);
-    font-size: clamp(1.02rem, 1.45vw, 1.72rem);
-    line-height: 1.02;
+    font-size: 1.18rem;
+    line-height: 1.08;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .project-overview-table-card p {
     margin: 0.34rem 0 0;
     color: var(--text-soft);
-    font-size: 0.82rem;
-    line-height: 1.38;
+    font-size: 0.8rem;
+    line-height: 1.34;
+    overflow-wrap: anywhere;
+}
+
+.project-overview-table-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(4.6rem, 1fr));
+    gap: 0.38rem;
+    min-width: min(100%, 10.2rem);
+}
+
+.project-overview-table-card__metric {
+    min-width: 0;
+    padding: 0.34rem 0.48rem;
+    border-radius: 8px;
+    border: 1px solid rgba(226, 238, 246, 0.08);
+    background: rgba(255,255,255,0.035);
+}
+
+.project-overview-table-card__metric span,
+.project-overview-table-card__metric strong {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-overview-table-card__metric span {
+    color: rgba(223, 238, 251, 0.64);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.project-overview-table-card__metric strong {
+    margin-top: 0.08rem;
+    color: var(--text);
+    font-size: 0.92rem;
+    line-height: 1;
 }
 
 .project-overview-table-card__table-wrap {
@@ -139,36 +191,51 @@
     border-spacing: 0;
     overflow: hidden;
     border-radius: 8px;
-    border: 1px solid rgba(151, 192, 230, 0.12);
-    background: rgba(7, 12, 20, 0.68);
+    border: 1px solid rgba(226, 238, 246, 0.12);
+    background: rgba(5, 9, 13, 0.72);
 }
 
 .project-overview-inline-table th,
 .project-overview-inline-table td {
-    padding: 0.44rem 0.58rem;
-    border-bottom: 1px solid rgba(151, 192, 230, 0.07);
+    padding: 0.48rem 0.62rem;
+    border-bottom: 1px solid rgba(226, 238, 246, 0.07);
     color: var(--text-soft);
     font-size: 0.78rem;
-    line-height: 1.14;
+    line-height: 1.18;
     text-align: left;
     vertical-align: middle;
     white-space: nowrap;
 }
 
 .project-overview-inline-table th {
-    background: rgba(17, 24, 38, 0.94);
+    background: rgba(18, 22, 27, 0.96);
     color: var(--text);
     font-size: 0.68rem;
     font-weight: 800;
+    letter-spacing: 0;
     text-transform: uppercase;
+}
+
+.project-overview-inline-table tbody tr:nth-child(even) td {
+    background: rgba(255,255,255,0.018);
+}
+
+.project-overview-inline-table tbody tr:hover td {
+    background: rgba(126, 219, 205, 0.055);
 }
 
 .project-overview-inline-table tr:last-child td {
     border-bottom: 0;
 }
 
+.project-overview-inline-table .is-primary {
+    color: rgba(238, 246, 250, 0.94);
+    font-weight: 800;
+}
+
 .project-overview-inline-table .is-number {
     text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 .project-overview-table-empty {
@@ -198,6 +265,24 @@
     .project-overview-table-card {
         margin-top: 0.8rem !important;
         padding: 0.58rem 0.58rem 0.52rem !important;
+    }
+
+    .project-overview-table-card__head {
+        grid-template-columns: 1fr;
+        gap: 0.48rem;
+        align-items: start;
+        margin-bottom: 0.48rem;
+        padding-bottom: 0.48rem;
+    }
+
+    .project-overview-table-card__metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        min-width: 0;
+    }
+
+    .project-overview-table-card h3 {
+        font-size: 1.06rem;
     }
 
     .project-overview-inline-table {

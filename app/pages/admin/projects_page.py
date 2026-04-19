@@ -79,6 +79,25 @@ def _format_inline_table_value(value: object) -> str:
     return str(value)
 
 
+def _overview_table_card_metrics(frame: pd.DataFrame) -> list[tuple[str, str]]:
+    if frame.empty:
+        return [("Rows", "0")]
+
+    if "Project type" in frame.columns:
+        first_label = "Types"
+    elif "Client" in frame.columns:
+        first_label = "Clients"
+    else:
+        first_label = "Rows"
+
+    metrics: list[tuple[str, str]] = [(first_label, f"{len(frame):,}")]
+    for column in ("Projects", "Active", "Planned", "Assignments"):
+        if column in frame.columns:
+            total = int(pd.to_numeric(frame[column], errors="coerce").fillna(0).sum())
+            metrics.append((column, f"{total:,}"))
+    return metrics[:4]
+
+
 def _render_overview_table_card(
     title: str,
     meta: str,
@@ -88,10 +107,21 @@ def _render_overview_table_card(
     modifier: str,
 ) -> None:
     columns = [str(column) for column in frame.columns]
-    header_markup = "".join(
-        f'<th scope="col" class="{"is-number" if pd.api.types.is_numeric_dtype(frame[column]) else ""}">{escape(column)}</th>'
-        for column in columns
+    metric_markup = "".join(
+        f'<div class="project-overview-table-card__metric"><span>{escape(label)}</span><strong>{escape(value)}</strong></div>'
+        for label, value in _overview_table_card_metrics(frame)
     )
+    header_cells: list[str] = []
+    for column in columns:
+        classes = []
+        if pd.api.types.is_numeric_dtype(frame[column]):
+            classes.append("is-number")
+        if column == columns[0]:
+            classes.append("is-primary")
+        class_markup = f' class="{" ".join(classes)}"' if classes else ""
+        header_cells.append(f'<th scope="col"{class_markup}>{escape(column)}</th>')
+    header_markup = "".join(header_cells)
+
     if frame.empty or not columns:
         body_markup = '<tr><td colspan="1" class="project-overview-table-empty">No rows available.</td></tr>'
     else:
@@ -100,8 +130,13 @@ def _render_overview_table_card(
             cell_parts: list[str] = []
             for column in columns:
                 value = _format_inline_table_value(row[column])
-                number_class = " is-number" if pd.api.types.is_numeric_dtype(frame[column]) else ""
-                cell_parts.append(f'<td class="{number_class}">{escape(value)}</td>')
+                classes = []
+                if pd.api.types.is_numeric_dtype(frame[column]):
+                    classes.append("is-number")
+                if column == columns[0]:
+                    classes.append("is-primary")
+                class_markup = f' class="{" ".join(classes)}"' if classes else ""
+                cell_parts.append(f"<td{class_markup}>{escape(value)}</td>")
             row_parts.append(f"<tr>{''.join(cell_parts)}</tr>")
         body_markup = "".join(row_parts)
 
@@ -111,9 +146,12 @@ def _render_overview_table_card(
             for line in f"""
             <div class="project-overview-table-card project-overview-table-card--{escape(modifier)}">
                 <div class="project-overview-table-card__head">
-                    <div class="project-overview-table-card__eyebrow">{escape(eyebrow)}</div>
-                    <h3>{escape(title)}</h3>
-                    <p>{escape(meta)}</p>
+                    <div class="project-overview-table-card__title">
+                        <div class="project-overview-table-card__eyebrow">{escape(eyebrow)}</div>
+                        <h3>{escape(title)}</h3>
+                        <p>{escape(meta)}</p>
+                    </div>
+                    <div class="project-overview-table-card__metrics">{metric_markup}</div>
                 </div>
                 <div class="project-overview-table-card__table-wrap">
                     <table class="project-overview-inline-table">
