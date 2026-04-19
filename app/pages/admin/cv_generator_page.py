@@ -79,9 +79,37 @@ def _read_template_file(uploaded_file) -> bytes | None:
 
 def _render_placeholder_help() -> None:
     with st.expander("Template placeholders", expanded=False):
-        st.caption("Put these placeholders inside your Word template where the surveyor information should appear.")
+        st.caption("Use placeholders when you want exact control. Standard Form H tables can also be filled automatically.")
         render_table(_placeholder_frame(), max_visible_rows=12, row_height=30)
         st.code("{{surveyor_name}}\n{{phone_number}}\n{{assignments}}\n{{bank_accounts}}", language="text")
+
+
+def _render_form_h_extra_fields() -> dict[str, str]:
+    with st.expander("Optional Form H fields", expanded=False):
+        st.caption("These fields are used only when the uploaded template has Form H labels and the value is not stored for the surveyor.")
+        left, right = st.columns(2)
+        with left:
+            proposer_name = st.text_input("Name of proposer", key="cv_generator_proposer_name")
+            rfp_reference = st.text_input("RFP reference", key="cv_generator_rfp_reference")
+            position_tor = st.text_input("Position as per ToR", key="cv_generator_position_tor")
+            nationality = st.text_input("Nationality", key="cv_generator_nationality")
+        with right:
+            date_of_birth = st.text_input("Date of birth", key="cv_generator_date_of_birth", placeholder="YYYY-MM-DD")
+            language_proficiency = st.text_input("Language proficiency", key="cv_generator_language")
+            education_qualifications = st.text_area("Education / Qualifications", key="cv_generator_education", height=84)
+            professional_certifications = st.text_area("Professional Certifications", key="cv_generator_certifications", height=84)
+        references = st.text_area("References", key="cv_generator_references", height=84)
+    return {
+        "proposer_name": proposer_name.strip(),
+        "rfp_reference": rfp_reference.strip(),
+        "position_tor": position_tor.strip(),
+        "nationality": nationality.strip(),
+        "date_of_birth": date_of_birth.strip(),
+        "language_proficiency": language_proficiency.strip(),
+        "education_qualifications": education_qualifications.strip(),
+        "professional_certifications": professional_certifications.strip(),
+        "references": references.strip(),
+    }
 
 
 def _render_ready_output(output: dict) -> None:
@@ -170,11 +198,18 @@ def render_cv_generator_page() -> None:
             key="cv_generator_template",
             help="Use placeholders like {{surveyor_name}} inside the Word file.",
         )
+        smart_fill = st.checkbox(
+            "Auto-fill standard Form H tables",
+            value=True,
+            key="cv_generator_smart_fill",
+            help="When the template has Form H labels, known table fields are filled even without placeholders.",
+        )
         st.caption(f"Template limit: {MAX_TEMPLATE_SIZE_MB} MB. Old .doc files should be saved as .docx first.")
         generate = st.button("Generate formatted CV", type="primary", width="stretch")
 
     with right:
         _render_placeholder_help()
+        extra_replacements = _render_form_h_extra_fields()
 
     template_bytes = _read_template_file(uploaded_template)
     selected_row = surveyor_options[selected_label]
@@ -195,8 +230,14 @@ def render_cv_generator_page() -> None:
             context.get("bank_accounts", []),
             context.get("assignments", []),
         )
+        replacements.update({key: value for key, value in extra_replacements.items() if value})
         try:
-            docx_bytes = render_docx_template(template_bytes, replacements)
+            docx_bytes = render_docx_template(
+                template_bytes,
+                replacements,
+                assignments=context.get("assignments", []),
+                smart_fill=smart_fill,
+            )
             missing_tokens = find_unreplaced_placeholders(docx_bytes)
         except Exception as exc:
             st.warning(f"The template could not be processed. Make sure it is a valid .docx file. Details: {exc}")

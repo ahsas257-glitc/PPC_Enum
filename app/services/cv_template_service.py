@@ -30,6 +30,18 @@ PLACEHOLDER_FIELDS = [
     ("assignments", "All surveyor project assignments"),
     ("active_assignments", "Only active/current project assignments"),
     ("project_names", "Project names list"),
+    ("current_role", "Current or latest assignment role"),
+    ("current_project_name", "Current or latest project name"),
+    ("current_employer", "Current project client or partner"),
+    ("proposer_name", "Form H proposer name"),
+    ("rfp_reference", "Form H RFP reference"),
+    ("position_tor", "Position as per ToR"),
+    ("nationality", "Nationality"),
+    ("date_of_birth", "Date of birth"),
+    ("language_proficiency", "Language proficiency"),
+    ("education_qualifications", "Education and qualifications"),
+    ("professional_certifications", "Professional certifications"),
+    ("references", "References"),
     ("generated_date", "Document generated date"),
 ]
 
@@ -89,6 +101,23 @@ def _join_lines(values: list[str], fallback: str = "") -> str:
     return "\n".join(cleaned) if cleaned else fallback
 
 
+def _current_assignment(assignments: list[dict[str, Any]]) -> dict[str, Any]:
+    active_assignments = [assignment for assignment in assignments if assignment.get("is_current_active")]
+    if active_assignments:
+        return active_assignments[0]
+    if assignments:
+        return assignments[0]
+    return {}
+
+
+def _years_since(value: Any) -> str:
+    if not isinstance(value, date):
+        return ""
+    today = date.today()
+    years = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
+    return str(max(years, 0))
+
+
 def build_replacement_map(
     profile: dict[str, Any],
     bank_accounts: list[dict[str, Any]] | None = None,
@@ -97,6 +126,9 @@ def build_replacement_map(
     bank_accounts = bank_accounts or []
     assignments = assignments or []
     active_assignments = [assignment for assignment in assignments if assignment.get("is_current_active")]
+    current_assignment = _current_assignment(assignments)
+    current_role = _format_status(current_assignment.get("role"))
+    current_employer = _display(current_assignment.get("implementing_partner")) or _display(current_assignment.get("client_name"))
 
     replacements = {
         "surveyor_id": _display(profile.get("surveyor_id")),
@@ -131,6 +163,20 @@ def build_replacement_map(
             "No active project assignments",
         ),
         "project_names": _join_lines([_display(assignment.get("project_name")) for assignment in assignments], "No project assignments"),
+        "current_role": current_role,
+        "current_project_name": _display(current_assignment.get("project_name")),
+        "current_employer": current_employer,
+        "current_employer_address": _display(current_assignment.get("work_province_name")) or _display(profile.get("current_province_name")),
+        "years_with_present_employer": _years_since(current_assignment.get("assignment_start_date")),
+        "position_tor": current_role,
+        "proposer_name": _display(profile.get("proposer_name")),
+        "rfp_reference": _display(profile.get("rfp_reference")),
+        "nationality": _display(profile.get("nationality")),
+        "date_of_birth": _display(profile.get("date_of_birth")),
+        "language_proficiency": _display(profile.get("language_proficiency")),
+        "education_qualifications": _display(profile.get("education_qualifications")),
+        "professional_certifications": _display(profile.get("professional_certifications")),
+        "references": _display(profile.get("references")),
         "generated_date": date.today().strftime("%Y-%m-%d"),
     }
     return replacements
@@ -183,9 +229,214 @@ def _replace_in_document(document, tokens: dict[str, str]) -> None:
                 _replace_in_table(table, tokens)
 
 
-def render_docx_template(template_bytes: bytes, replacements: dict[str, str]) -> bytes:
+def _set_paragraph_text(paragraph, text: str) -> None:
+    if not paragraph.runs:
+        paragraph.add_run(text)
+        return
+    paragraph.runs[0].text = text
+    for run in paragraph.runs[1:]:
+        run.text = ""
+
+
+def _set_cell_text(cell, text: str) -> None:
+    if cell.paragraphs:
+        _set_paragraph_text(cell.paragraphs[0], text)
+        for paragraph in cell.paragraphs[1:]:
+            _set_paragraph_text(paragraph, "")
+    else:
+        cell.text = text
+
+
+def _cell_text(cell) -> str:
+    return (cell.text or "").strip()
+
+
+def _is_form_h_document(document) -> bool:
+    for paragraph in document.paragraphs:
+        if "FORMAT FOR CV OF PROPOSED KEY PERSONNEL" in paragraph.text.upper():
+            return True
+    return any(
+        table.rows
+        and table.columns
+        and "POSITION (AS PER TOR)" in _cell_text(table.cell(0, 0)).upper()
+        for table in document.tables
+    )
+
+
+def _field(label: str, value: str) -> str:
+    return f"{label}: {value}" if value else f"{label}:"
+
+
+def _fill_value_cell(table, row_index: int, column_index: int, label: str, value: str) -> None:
+    if len(table.rows) <= row_index or len(table.columns) <= column_index:
+        return
+    if value:
+        _set_cell_text(table.cell(row_index, column_index), _field(label, value))
+
+
+def _fill_header_table(table, replacements: dict[str, str]) -> None:
+    if len(table.rows) < 2 or len(table.columns) < 4:
+        return
+    proposer_name = replacements.get("proposer_name", "")
+    rfp_reference = replacements.get("rfp_reference", "")
+    generated_date = replacements.get("generated_date", "")
+
+    if "NAME OF PROPOSER" in _cell_text(table.cell(0, 0)).upper() and proposer_name:
+        _set_cell_text(table.cell(0, 1), proposer_name)
+    if "DATE" in _cell_text(table.cell(0, 2)).upper() and generated_date:
+        _set_cell_text(table.cell(0, 3), generated_date)
+    if "RFP REFERENCE" in _cell_text(table.cell(1, 0)).upper() and rfp_reference:
+        _set_cell_text(table.cell(1, 1), rfp_reference)
+
+
+def _fill_personnel_table(table, replacements: dict[str, str]) -> None:
+    if len(table.rows) < 11 or len(table.columns) < 3:
+        return
+    if "POSITION (AS PER TOR)" not in _cell_text(table.cell(0, 0)).upper():
+        return
+
+    position = replacements.get("position_tor") or replacements.get("current_role", "")
+    if position:
+        _set_cell_text(table.cell(0, 1), position)
+
+    _fill_value_cell(table, 1, 1, "Name", replacements.get("surveyor_name", ""))
+    _fill_value_cell(table, 2, 1, "Nationality", replacements.get("nationality", ""))
+    _fill_value_cell(table, 2, 2, "Date of birth", replacements.get("date_of_birth", ""))
+    _fill_value_cell(table, 3, 1, "Language Proficiency", replacements.get("language_proficiency", ""))
+    _fill_value_cell(table, 4, 1, "Name of employer", replacements.get("current_employer", ""))
+    _fill_value_cell(table, 4, 2, "Contact", replacements.get("whatsapp_number", "") or replacements.get("phone_number", ""))
+    _fill_value_cell(table, 5, 1, "Address of employer", replacements.get("current_employer_address", ""))
+    _fill_value_cell(table, 6, 1, "Telephone", replacements.get("phone_number", ""))
+    _fill_value_cell(table, 6, 2, "Email", replacements.get("email_address", ""))
+    _fill_value_cell(table, 7, 1, "Job title", replacements.get("current_role", ""))
+    _fill_value_cell(table, 7, 2, "Years with present employer", replacements.get("years_with_present_employer", ""))
+
+    if replacements.get("education_qualifications"):
+        _set_cell_text(table.cell(8, 1), replacements["education_qualifications"])
+    if replacements.get("professional_certifications"):
+        _set_cell_text(table.cell(9, 1), replacements["professional_certifications"])
+    if replacements.get("references"):
+        _set_cell_text(table.cell(10, 1), replacements["references"])
+
+
+def _assignment_detail(assignment: dict[str, Any]) -> str:
+    project_name = _display(assignment.get("project_name"), "Unnamed project")
+    project_code = _display(assignment.get("project_code"))
+    role = _format_status(assignment.get("role")) or "Surveyor"
+    province = _display(assignment.get("work_province_name")) or _display(assignment.get("work_province_code"))
+    client = _display(assignment.get("client_name"))
+    partner = _display(assignment.get("implementing_partner"))
+    status = _format_status(assignment.get("assignment_status"))
+    parts = []
+    if project_code:
+        parts.append(project_code)
+    parts.append(project_name)
+    parts.append(f"Position: {role}")
+    if province:
+        parts.append(f"Province: {province}")
+    if client:
+        parts.append(f"Client: {client}")
+    if partner:
+        parts.append(f"Partner: {partner}")
+    if status:
+        parts.append(f"Status: {status}")
+    return " | ".join(parts)
+
+
+def _fill_experience_table(table, assignments: list[dict[str, Any]]) -> None:
+    if len(table.rows) < 2 or len(table.columns) < 3:
+        return
+    headers = [_cell_text(table.cell(0, column_index)).upper() for column_index in range(3)]
+    if headers[:2] != ["FROM", "TO"] or "COMPANY" not in headers[2]:
+        return
+
+    selected_assignments = assignments[:20]
+    if not selected_assignments:
+        _set_cell_text(table.cell(1, 0), "")
+        _set_cell_text(table.cell(1, 1), "")
+        _set_cell_text(table.cell(1, 2), "")
+        return
+
+    while len(table.rows) < len(selected_assignments) + 1:
+        table.add_row()
+
+    for offset, assignment in enumerate(selected_assignments, start=1):
+        _set_cell_text(table.cell(offset, 0), _display(assignment.get("assignment_start_date")))
+        _set_cell_text(table.cell(offset, 1), _display(assignment.get("assignment_end_date"), "Present"))
+        _set_cell_text(table.cell(offset, 2), _assignment_detail(assignment))
+
+
+def _fill_availability_table(table, assignments: list[dict[str, Any]]) -> None:
+    if len(table.rows) < 2 or len(table.columns) < 2:
+        return
+    headers = [_cell_text(table.cell(0, column_index)).upper() for column_index in range(2)]
+    if headers != ["FROM", "TO"]:
+        return
+
+    active_assignments = [assignment for assignment in assignments if assignment.get("is_current_active")]
+    selected_assignments = (active_assignments or assignments)[:10]
+    if not selected_assignments:
+        for row_index in range(1, len(table.rows)):
+            _set_cell_text(table.cell(row_index, 0), "")
+            _set_cell_text(table.cell(row_index, 1), "")
+        return
+
+    while len(table.rows) < len(selected_assignments) + 1:
+        table.add_row()
+
+    for offset, assignment in enumerate(selected_assignments, start=1):
+        _set_cell_text(table.cell(offset, 0), _display(assignment.get("assignment_start_date")))
+        _set_cell_text(table.cell(offset, 1), _display(assignment.get("assignment_end_date"), "Present"))
+
+    for row_index in range(len(selected_assignments) + 1, len(table.rows)):
+        _set_cell_text(table.cell(row_index, 0), "")
+        _set_cell_text(table.cell(row_index, 1), "")
+
+
+def _fill_signature_paragraphs(document, replacements: dict[str, str]) -> None:
+    name = replacements.get("surveyor_name", "")
+    title = replacements.get("current_role") or replacements.get("position_tor", "")
+    generated_date = replacements.get("generated_date", "")
+    for paragraph in document.paragraphs:
+        normalized = " ".join(paragraph.text.split()).upper()
+        if normalized == "NAME: TITLE: DATE: SIGNATURE:" and name:
+            _set_paragraph_text(paragraph, f"Name: {name}\tTitle: {title}\tDate: {generated_date}\tSignature:")
+
+
+def _auto_fill_standard_cv_forms(
+    document,
+    replacements: dict[str, str],
+    assignments: list[dict[str, Any]],
+) -> None:
+    if not _is_form_h_document(document):
+        return
+
+    for table in document.tables:
+        first_cell = _cell_text(table.cell(0, 0)).upper() if table.rows and table.columns else ""
+        if "NAME OF PROPOSER" in first_cell:
+            _fill_header_table(table, replacements)
+        elif "POSITION (AS PER TOR)" in first_cell:
+            _fill_personnel_table(table, replacements)
+        elif first_cell == "FROM":
+            if len(table.columns) >= 3:
+                _fill_experience_table(table, assignments)
+            else:
+                _fill_availability_table(table, assignments)
+
+    _fill_signature_paragraphs(document, replacements)
+
+
+def render_docx_template(
+    template_bytes: bytes,
+    replacements: dict[str, str],
+    *,
+    assignments: list[dict[str, Any]] | None = None,
+    smart_fill: bool = True,
+) -> bytes:
     document = Document(BytesIO(template_bytes))
     _replace_in_document(document, replacement_tokens(replacements))
+    if smart_fill:
+        _auto_fill_standard_cv_forms(document, replacements, assignments or [])
     output = BytesIO()
     document.save(output)
     return output.getvalue()
