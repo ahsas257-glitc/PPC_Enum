@@ -357,53 +357,25 @@ def _build_health_html(metrics: dict[str, object]) -> str:
     return f'<div class="dashboard-signal-grid">{cards}</div>'
 
 
-def _build_spotlight_html(
-    action_mix: pd.DataFrame,
-    entity_mix: pd.DataFrame,
-    recent_audit: list[dict],
-) -> str:
-    def _list_markup(title: str, frame: pd.DataFrame) -> str:
-        if frame.empty:
-            items = '<div class="dashboard-spotlight-list__empty">No activity yet.</div>'
-        else:
-            items = "".join(
-                f"""
-                <div class="dashboard-spotlight-list__item">
-                    <span title="{escape(str(row.label))}">{escape(str(row.label))}</span>
-                    <strong>{escape(_format_compact_number(row.total))}</strong>
-                </div>
-                """
-                for row in frame.itertuples(index=False)
-            )
-        return f"""
-        <div class="dashboard-spotlight-list">
-            <h4 title="{escape(title)}">{escape(title)}</h4>
-            {items}
-        </div>
-        """
-
-    latest_rows = recent_audit[:4]
-    if latest_rows:
-        feed_markup = "".join(
+def _build_spotlight_list_html(title: str, frame: pd.DataFrame) -> str:
+    if frame.empty:
+        items = '<div class="dashboard-spotlight-list__empty">No activity yet.</div>'
+    else:
+        items = "".join(
             f"""
-            <div class="dashboard-feed-row">
-                <div>
-                    <span title="{escape(_humanize_token(item.get('entity')))}">{escape(_humanize_token(item.get("entity")))}</span>
-                    <strong title="{escape(_humanize_token(item.get('action')))}">{escape(_humanize_token(item.get("action")))}</strong>
-                </div>
-                <small>{escape(str(item.get("actor_name") or "System"))}</small>
+            <div class="dashboard-spotlight-list__item">
+                <span title="{escape(str(row.label))}">{escape(str(row.label))}</span>
+                <strong>{escape(_format_compact_number(row.total))}</strong>
             </div>
             """
-            for item in latest_rows
+            for row in frame.head(6).itertuples(index=False)
         )
-    else:
-        feed_markup = '<div class="dashboard-spotlight-list__empty">No recent activity yet.</div>'
-
-    return (
-        _list_markup("Action pressure", action_mix)
-        + _list_markup("Entity pressure", entity_mix)
-        + f'<div class="dashboard-feed"><h4 title="Latest moves">Latest moves</h4>{feed_markup}</div>'
-    )
+    return f"""
+    <div class="dashboard-spotlight-list dashboard-spotlight-list--single">
+        <h4 title="{escape(title)}">{escape(title)}</h4>
+        {items}
+    </div>
+    """
 
 
 def _status_tone(value: object) -> str:
@@ -419,12 +391,16 @@ def _status_tone(value: object) -> str:
     return "neutral"
 
 
-def _build_project_stream_html(frame: pd.DataFrame) -> str:
+def _build_project_stream_html(frame: pd.DataFrame, *, start: int = 0, limit: int = 3) -> str:
     if frame.empty:
         return '<div class="dashboard-empty-state">Recent project records will appear here.</div>'
 
     cards = []
-    for item in frame.head(5).to_dict(orient="records"):
+    window = frame.iloc[start : start + limit]
+    if window.empty:
+        return '<div class="dashboard-empty-state">No additional project records in this window.</div>'
+
+    for item in window.to_dict(orient="records"):
         project_name = str(item.get("project_name") or "Untitled project")
         project_code = str(item.get("project_code") or "No code")
         client = str(item.get("client_name") or "Unassigned client")
@@ -456,12 +432,16 @@ def _build_project_stream_html(frame: pd.DataFrame) -> str:
     return f'<div class="dashboard-project-stream">{"".join(cards)}</div>'
 
 
-def _build_surveyor_stream_html(frame: pd.DataFrame) -> str:
+def _build_surveyor_stream_html(frame: pd.DataFrame, *, start: int = 0, limit: int = 3) -> str:
     if frame.empty:
         return '<div class="dashboard-empty-state">Recent surveyor records will appear here.</div>'
 
     cards = []
-    for item in frame.head(6).to_dict(orient="records"):
+    window = frame.iloc[start : start + limit]
+    if window.empty:
+        return '<div class="dashboard-empty-state">No additional surveyor records in this window.</div>'
+
+    for item in window.to_dict(orient="records"):
         surveyor_name = str(item.get("surveyor_name") or "Unnamed surveyor")
         surveyor_code = str(item.get("surveyor_code") or "No code")
         current_province = str(item.get("current_province_name") or "Province not set")
@@ -493,12 +473,16 @@ def _build_surveyor_stream_html(frame: pd.DataFrame) -> str:
     return f'<div class="dashboard-surveyor-grid">{"".join(cards)}</div>'
 
 
-def _build_audit_stream_html(rows: list[dict]) -> str:
+def _build_audit_stream_html(rows: list[dict], *, start: int = 0, limit: int = 4) -> str:
     if not rows:
         return '<div class="dashboard-empty-state">No audit activity yet.</div>'
 
     items = []
-    for item in rows[:7]:
+    window = rows[start : start + limit]
+    if not window:
+        return '<div class="dashboard-empty-state">No additional audit events in this window.</div>'
+
+    for item in window:
         action = _humanize_token(item.get("action"))
         entity = _humanize_token(item.get("entity"))
         actor = str(item.get("actor_name") or "System")
@@ -792,24 +776,44 @@ def render_dashboard_page() -> None:
             empty_message="Project lifecycle data will appear after projects are created.",
         )
 
-    project_table_col, surveyor_table_col = st.columns(2, gap="large")
-    with project_table_col:
+    project_primary_col, surveyor_primary_col = st.columns(2, gap="large")
+    with project_primary_col:
         _render_html_panel(
             key="dashboard_panel_recent_projects",
             title="Recent projects",
-            meta="Compact project stream.",
+            meta="Latest project records.",
             eyebrow="Projects",
-            body_html=_build_project_stream_html(recent_projects),
-            pills=[f"{len(recent_projects):,} latest records"],
+            body_html=_build_project_stream_html(recent_projects, start=0, limit=3),
+            pills=[f"{min(len(recent_projects), 3):,} shown"],
         )
-    with surveyor_table_col:
+    with surveyor_primary_col:
         _render_html_panel(
             key="dashboard_panel_recent_surveyors",
             title="Recent surveyors",
-            meta="Readiness and payout link.",
+            meta="Latest readiness records.",
             eyebrow="Surveyors",
-            body_html=_build_surveyor_stream_html(recent_surveyors),
-            pills=[f"{len(recent_surveyors):,} latest records"],
+            body_html=_build_surveyor_stream_html(recent_surveyors, start=0, limit=3),
+            pills=[f"{min(len(recent_surveyors), 3):,} shown"],
+        )
+
+    project_secondary_col, surveyor_secondary_col = st.columns(2, gap="large")
+    with project_secondary_col:
+        _render_html_panel(
+            key="dashboard_panel_project_queue",
+            title="Project queue",
+            meta="Next project records.",
+            eyebrow="Projects",
+            body_html=_build_project_stream_html(recent_projects, start=3, limit=3),
+            pills=[f"{max(len(recent_projects) - 3, 0):,} more"],
+        )
+    with surveyor_secondary_col:
+        _render_html_panel(
+            key="dashboard_panel_surveyor_queue",
+            title="Surveyor queue",
+            meta="Next surveyor readiness records.",
+            eyebrow="Surveyors",
+            body_html=_build_surveyor_stream_html(recent_surveyors, start=3, limit=3),
+            pills=[f"{max(len(recent_surveyors) - 3, 0):,} more"],
         )
 
     if full_view:
@@ -844,7 +848,7 @@ def render_dashboard_page() -> None:
                 )
                 st.html(_build_health_html(metrics))
 
-        governance_mix_col, payout_col, spotlight_col = st.columns(3, gap="large")
+        governance_mix_col, payout_col, action_col = st.columns(3, gap="large")
         with governance_mix_col:
             _render_chart_panel(
                 key="dashboard_panel_roles",
@@ -869,26 +873,41 @@ def render_dashboard_page() -> None:
                 pills=[f"{_format_compact_number(metrics.get('total_bank_accounts'))} payout channels"],
                 empty_message="Payout mix will appear after payout accounts are registered.",
             )
-        with spotlight_col:
-            with st.container(key="dashboard_panel_spotlight"):
-                st.html(
-                    _panel_header_html(
-                        "Activity spotlight",
-                        "Top actions, entities, and actors.",
-                        eyebrow="Spotlight",
-                        pills=[
-                            f"{len(action_mix):,} top actions",
-                            f"{len(entity_mix):,} top entities",
-                        ],
-                    )
-                )
-                st.html(_build_spotlight_html(action_mix, entity_mix, audit_rows))
+        with action_col:
+            _render_html_panel(
+                key="dashboard_panel_action_pressure",
+                title="Action pressure",
+                meta="Most repeated system actions.",
+                eyebrow="Spotlight",
+                body_html=_build_spotlight_list_html("Top actions", action_mix),
+                pills=[f"{len(action_mix):,} action bands"],
+            )
 
-        _render_html_panel(
-            key="dashboard_panel_recent_activity",
-            title="Recent audit",
-            meta="Latest system events.",
-            eyebrow="Audit",
-            body_html=_build_audit_stream_html(audit_rows),
-            pills=[f"{len(audit_rows):,} latest events"],
-        )
+        entity_col, audit_left, audit_right = st.columns(3, gap="large")
+        with entity_col:
+            _render_html_panel(
+                key="dashboard_panel_entity_pressure",
+                title="Entity pressure",
+                meta="Records with the highest activity.",
+                eyebrow="Spotlight",
+                body_html=_build_spotlight_list_html("Top entities", entity_mix),
+                pills=[f"{len(entity_mix):,} entity bands"],
+            )
+        with audit_left:
+            _render_html_panel(
+                key="dashboard_panel_recent_activity",
+                title="Recent audit",
+                meta="Latest system events.",
+                eyebrow="Audit",
+                body_html=_build_audit_stream_html(audit_rows, start=0, limit=4),
+                pills=[f"{min(len(audit_rows), 4):,} shown"],
+            )
+        with audit_right:
+            _render_html_panel(
+                key="dashboard_panel_audit_queue",
+                title="Audit queue",
+                meta="Next system events.",
+                eyebrow="Audit",
+                body_html=_build_audit_stream_html(audit_rows, start=4, limit=4),
+                pills=[f"{max(len(audit_rows) - 4, 0):,} more"],
+            )

@@ -1,0 +1,230 @@
+/* ==========================================================================
+   DASHBOARD EQUAL CARDS
+   Loaded after luxury styles so all dashboard panels share one desktop height.
+   ========================================================================== */
+
+@media (min-width: 901px) {
+    :root {
+        --dashboard-equal-card-height: 468px;
+        --dashboard-equal-card-gap: 0.9rem;
+    }
+
+    .block-container [data-testid="stHorizontalBlock"]:has([class*="st-key-dashboard_panel_"]) {
+        align-items: stretch !important;
+        gap: var(--dashboard-equal-card-gap) !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .block-container [data-testid="stHorizontalBlock"]:has([class*="st-key-dashboard_panel_"]) > [data-testid="column"] {
+        display: flex !important;
+        flex-direction: column !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .block-container [data-testid="stHorizontalBlock"]:has([class*="st-key-dashboard_panel_"]) > [data-testid="column"] > div,
+    .block-container [data-testid="stHorizontalBlock"]:has([class*="st-key-dashboard_panel_"]) > [data-testid="column"] [data-testid="stVerticalBlock"],
+    .block-container [data-testid="stHorizontalBlock"]:has([class*="st-key-dashboard_panel_"]) > [data-testid="column"] [data-testid="element-container"] {
+        display: flex !important;
+        flex: 1 1 auto !important;
+        flex-direction: column !important;
+        min-width: 0 !important;
+    }
+
+    .block-container [data-testid="stHorizontalBlock"]:has([class*="st-key-dashboard_panel_"]) [class*="st-key-dashboard_panel_"] {
+        display: flex !important;
+        flex: 1 1 auto !important;
+        flex-direction: column !important;
+        min-width: 0 !important;
+        height: var(--dashboard-equal-card-height) !important;
+        min-height: var(--dashboard-equal-card-height) !important;
+        max-height: var(--dashboard-equal-card-height) !important;
+        margin-bottom: 0.72rem !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-dashboard_panel_project_load,
+    .st-key-dashboard_panel_surveyor_coverage,
+    .st-key-dashboard_panel_client_mix,
+    .st-key-dashboard_panel_project_status,
+    .st-key-dashboard_panel_recent_projects,
+    .st-key-dashboard_panel_recent_surveyors,
+    .st-key-dashboard_panel_project_queue,
+    .st-key-dashboard_panel_surveyor_queue,
+    .st-key-dashboard_panel_audit_flow,
+    .st-key-dashboard_panel_system_health,
+    .st-key-dashboard_panel_roles,
+    .st-key-dashboard_panel_payouts,
+    .st-key-dashboard_panel_action_pressure,
+    .st-key-dashboard_panel_entity_pressure,
+    .st-key-dashboard_panel_recent_activity,
+    .st-key-dashboard_panel_audit_queue {
+        height: var(--dashboard-equal-card-height) !important;
+        min-height: var(--dashboard-equal-card-height) !important;
+        max-height: var(--dashboard-equal-card-height) !important;
+    }
+
+    .dashboard-panel-head {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 0.46rem !important;
+        min-height: 92px !important;
+        margin-bottom: 0.58rem !important;
+        align-items: start !important;
+        overflow: hidden !important;
+    }
+
+    .dashboard-panel-head h3 {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
+        min-height: 2.22em !important;
+        white-space: normal !important;
+        overflow: hidden !important;
+        text-overflow: clip !important;
+    }
+
+    .dashboard-panel-head p {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 1 !important;
+        min-height: 1.35em !important;
+        white-space: normal !important;
+        overflow: hidden !important;
+        text-overflow: clip !important;
+    }
+
+    .dashboard-panel-head__pills {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)) !important;
+        gap: 0.34rem !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .dashboard-panel-head__pills span {
+        justify-content: center !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-inline: 0.48rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .dashboard-lite-chart,
+    .dashboard-project-stream,
+    .dashboard-surveyor-grid,
+    .dashboard-signal-grid,
+    .dashboard-spotlight-list,
+    .dashboard-feed,
+    .dashboard-audit-stream {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+
+    .dashboard-lite-chart {
+        min-height: 284px !important;
+    }
+
+    .dashboard-project-stream {
+        display: grid !important;
+        grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+        gap: 0.48rem !important;
+        height: 100% !important;
+    }
+
+    .dashboard-project-card {
+        min-height: 0 !important;
+        padding: 0.58rem !important;
+        gap: 0.52rem !important;
+    }
+
+    .dashboard-project-card__timeline {
+        padding-top: 0.34rem !important;
+    }
+
+    .dashboard-surveyor-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-auto-rows: minmax(0, 1fr) !important;
+        gap: 0.48rem !important;
+        height: 100% !important;
+    }
+
+    .dashboard-surveyor-card {
+        min-height: 0 !important;
+        padding: 0.58rem !important;
+        gap: 0.36rem !important;
+    }
+
+    .dashboard-signal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        grid-auto-rows: minmax(0, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    .dashboard-signal-card {
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .dashboard-audit-stream {
+        display: grid !important;
+        grid-template-rows: repeat(4, minmax(0, 1fr)) !important;
+        gap: 0.46rem !important;
+        height: 100% !important;
+    }
+
+    .dashboard-audit-row {
+        min-height: 0 !important;
+        padding: 0.54rem 0.62rem !important;
+    }
+
+    .dashboard-spotlight-list--single {
+        display: grid !important;
+        grid-template-rows: auto repeat(6, minmax(0, 1fr)) !important;
+        height: 100% !important;
+        gap: 0.42rem !important;
+    }
+
+    .dashboard-spotlight-list__item {
+        min-height: 0 !important;
+        padding: 0.52rem 0.6rem !important;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1280px) {
+    .dashboard-panel-head__pills,
+    .dashboard-signal-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 900px) {
+    [class*="st-key-dashboard_panel_"],
+    .st-key-dashboard_panel_project_load,
+    .st-key-dashboard_panel_surveyor_coverage,
+    .st-key-dashboard_panel_client_mix,
+    .st-key-dashboard_panel_project_status,
+    .st-key-dashboard_panel_recent_projects,
+    .st-key-dashboard_panel_recent_surveyors,
+    .st-key-dashboard_panel_project_queue,
+    .st-key-dashboard_panel_surveyor_queue,
+    .st-key-dashboard_panel_audit_flow,
+    .st-key-dashboard_panel_system_health,
+    .st-key-dashboard_panel_roles,
+    .st-key-dashboard_panel_payouts,
+    .st-key-dashboard_panel_action_pressure,
+    .st-key-dashboard_panel_entity_pressure,
+    .st-key-dashboard_panel_recent_activity,
+    .st-key-dashboard_panel_audit_queue {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}

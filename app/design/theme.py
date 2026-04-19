@@ -42,6 +42,7 @@ CSS_FILE_ORDER: Final[tuple[str, ...]] = (
     "tables.css",
     "responsive.css",
     "luxury_2026.css",
+    "dashboard_equal_cards.css",
     "mobile_fast.css",
     "sidebar_behavior.css",
 )
