@@ -1,5 +1,6 @@
 import hashlib
 from datetime import date, datetime
+from html import escape
 from io import BytesIO
 
 from docx import Document
@@ -66,6 +67,65 @@ def _selection_control_key(prefix: str, value: object) -> str:
 
 def _render_selection_spacer(height: str = "0.58rem") -> None:
     st.html(f'<div style="height:{height};"></div>')
+
+
+def _format_inline_table_value(value: object) -> str:
+    if pd.isna(value):
+        return ""
+    if isinstance(value, float) and value.is_integer():
+        return f"{int(value):,}"
+    if isinstance(value, int):
+        return f"{value:,}"
+    return str(value)
+
+
+def _render_overview_table_card(
+    title: str,
+    meta: str,
+    *,
+    eyebrow: str,
+    frame: pd.DataFrame,
+    modifier: str,
+) -> None:
+    columns = [str(column) for column in frame.columns]
+    header_markup = "".join(
+        f'<th scope="col" class="{"is-number" if pd.api.types.is_numeric_dtype(frame[column]) else ""}">{escape(column)}</th>'
+        for column in columns
+    )
+    if frame.empty or not columns:
+        body_markup = '<tr><td colspan="1" class="project-overview-table-empty">No rows available.</td></tr>'
+    else:
+        row_parts: list[str] = []
+        for _, row in frame.iterrows():
+            cell_parts: list[str] = []
+            for column in columns:
+                value = _format_inline_table_value(row[column])
+                number_class = " is-number" if pd.api.types.is_numeric_dtype(frame[column]) else ""
+                cell_parts.append(f'<td class="{number_class}">{escape(value)}</td>')
+            row_parts.append(f"<tr>{''.join(cell_parts)}</tr>")
+        body_markup = "".join(row_parts)
+
+    st.html(
+        "".join(
+            line.strip()
+            for line in f"""
+            <div class="project-overview-table-card project-overview-table-card--{escape(modifier)}">
+                <div class="project-overview-table-card__head">
+                    <div class="project-overview-table-card__eyebrow">{escape(eyebrow)}</div>
+                    <h3>{escape(title)}</h3>
+                    <p>{escape(meta)}</p>
+                </div>
+                <div class="project-overview-table-card__table-wrap">
+                    <table class="project-overview-inline-table">
+                        <thead><tr>{header_markup}</tr></thead>
+                        <tbody>{body_markup}</tbody>
+                    </table>
+                </div>
+            </div>
+            """.splitlines()
+            if line.strip()
+        )
+    )
 
 
 def _render_checkbox_selector(
@@ -768,21 +828,21 @@ def render_projects_page() -> None:
 
             overview_col1, overview_col2 = st.columns(2)
             with overview_col1:
-                with st.container(key="project_overview_type_shell", border=True):
-                    render_panel_intro(
-                        "Project Types",
-                        "Understand where delivery volume is concentrated by project type.",
-                        eyebrow="Mix",
-                    )
-                    render_table(type_overview_frame, max_visible_rows=max(len(type_overview_frame), 1))
+                _render_overview_table_card(
+                    "Project Types",
+                    "Understand where delivery volume is concentrated by project type.",
+                    eyebrow="Mix",
+                    frame=type_overview_frame,
+                    modifier="types",
+                )
             with overview_col2:
-                with st.container(key="project_overview_client_shell", border=True):
-                    render_panel_intro(
-                        "Client Portfolio",
-                        "See which clients hold the largest number of active and planned projects.",
-                        eyebrow="Clients",
-                    )
-                    render_table(client_overview_frame, max_visible_rows=max(len(client_overview_frame), 1))
+                _render_overview_table_card(
+                    "Client Portfolio",
+                    "See which clients hold the largest number of active and planned projects.",
+                    eyebrow="Clients",
+                    frame=client_overview_frame,
+                    modifier="clients",
+                )
 
             render_panel_intro(
                 "Project Directory",
