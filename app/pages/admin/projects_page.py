@@ -1,3 +1,4 @@
+import hashlib
 from datetime import date, datetime
 from io import BytesIO
 
@@ -34,6 +35,8 @@ PROJECT_NOTES_KEY = "project_form_notes"
 PROJECT_OVERVIEW_STATUS_FILTER_KEY = "project_overview_status_filter"
 PROJECT_OVERVIEW_CLIENT_FILTER_KEY = "project_overview_client_filter"
 PROJECT_OVERVIEW_TYPE_FILTER_KEY = "project_overview_type_filter"
+PROJECT_OVERVIEW_PREPARED_EXPORT_KEY = "project_overview_prepared_export"
+PROJECT_OVERVIEW_EXPORT_CONTEXT_KEY = "project_overview_export_context"
 
 ASSIGNMENT_FORM_KEY = "assignment_form"
 ASSIGNMENT_PROJECT_KEY = "assignment_form_project"
@@ -367,6 +370,16 @@ def _export_ready_frame(frame: pd.DataFrame) -> pd.DataFrame:
     return export_frame
 
 
+def _hash_export_dataframe(frame: pd.DataFrame) -> str:
+    export_frame = _export_ready_frame(frame)
+    digest = hashlib.blake2b(digest_size=16)
+    digest.update("|".join(str(column) for column in export_frame.columns).encode("utf-8"))
+    digest.update("|".join(str(dtype) for dtype in export_frame.dtypes).encode("utf-8"))
+    if not export_frame.empty:
+        digest.update(pd.util.hash_pandas_object(export_frame, index=True).values.tobytes())
+    return digest.hexdigest()
+
+
 def _filters_summary_text(statuses: list[str], clients: list[str], project_types: list[str]) -> str:
     parts = [
         f"Statuses: {', '.join(statuses) if statuses else 'All'}",
@@ -380,12 +393,22 @@ def _dataframe_to_csv_bytes(frame: pd.DataFrame) -> bytes:
     return _export_ready_frame(frame).to_csv(index=False).encode("utf-8-sig")
 
 
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={pd.DataFrame: _hash_export_dataframe})
+def _cached_dataframe_to_csv_bytes(frame: pd.DataFrame) -> bytes:
+    return _dataframe_to_csv_bytes(frame)
+
+
 def _frames_to_xlsx_bytes(sheets: dict[str, pd.DataFrame]) -> bytes:
     output = BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         for sheet_name, frame in sheets.items():
             _export_ready_frame(frame).to_excel(writer, index=False, sheet_name=sheet_name[:31] or "Sheet1")
     return output.getvalue()
+
+
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={pd.DataFrame: _hash_export_dataframe})
+def _cached_frames_to_xlsx_bytes(sheets: dict[str, pd.DataFrame]) -> bytes:
+    return _frames_to_xlsx_bytes(sheets)
 
 
 def _summary_table_data(summary_items: list[tuple[str, str]]) -> list[list[str]]:
@@ -429,6 +452,16 @@ def _build_word_report_bytes(
     output = BytesIO()
     document.save(output)
     return output.getvalue()
+
+
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={pd.DataFrame: _hash_export_dataframe})
+def _cached_word_report_bytes(
+    title: str,
+    subtitle: str,
+    summary_items: list[tuple[str, str]],
+    sections: list[tuple[str, pd.DataFrame]],
+) -> bytes:
+    return _build_word_report_bytes(title, subtitle, summary_items, sections)
 
 
 def _build_pdf_report_bytes(
@@ -493,6 +526,22 @@ def _build_pdf_report_bytes(
 
     document.build(story)
     return output.getvalue()
+
+
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={pd.DataFrame: _hash_export_dataframe})
+def _cached_pdf_report_bytes(
+    title: str,
+    subtitle: str,
+    summary_items: list[tuple[str, str]],
+    sections: list[tuple[str, pd.DataFrame]],
+) -> bytes:
+    return _build_pdf_report_bytes(title, subtitle, summary_items, sections)
+
+
+def _export_frame_identity(frame: pd.DataFrame, id_column: str) -> tuple[str, ...]:
+    if frame.empty or id_column not in frame.columns:
+        return ()
+    return tuple(frame[id_column].astype(str).tolist())
 
 
 def _filter_projects_overview(
@@ -608,54 +657,86 @@ def render_projects_page() -> None:
                 "Project Types": type_overview_frame,
                 "Client Portfolio": client_overview_frame,
             }
-            word_bytes = _build_word_report_bytes(
-                "Project Overview Report",
-                overview_subtitle,
-                overview_summary_items,
-                export_sections,
+            export_context = (
+                tuple(selected_statuses),
+                tuple(selected_clients),
+                tuple(selected_project_types),
+                _export_frame_identity(filtered_projects_df, "project_id"),
+                _export_frame_identity(filtered_assignments_df, "project_surveyor_id"),
             )
-            pdf_bytes = _build_pdf_report_bytes(
-                "Project Overview Report",
-                overview_subtitle,
-                overview_summary_items,
-                export_sections,
-            )
-            xlsx_bytes = _frames_to_xlsx_bytes(workbook_sheets)
+            if st.session_state.get(PROJECT_OVERVIEW_EXPORT_CONTEXT_KEY) != export_context:
+                st.session_state[PROJECT_OVERVIEW_EXPORT_CONTEXT_KEY] = export_context
+                st.session_state[PROJECT_OVERVIEW_PREPARED_EXPORT_KEY] = None
 
             export_col1, export_col2, export_col3 = st.columns(3)
             with export_col1:
+                if st.button(
+                    "Prepare Word report",
+                    key="project_overview_prepare_word_export",
+                    width="stretch",
+                ):
+                    st.session_state[PROJECT_OVERVIEW_PREPARED_EXPORT_KEY] = "word"
+            with export_col2:
+                if st.button(
+                    "Prepare Excel workbook",
+                    key="project_overview_prepare_excel_export",
+                    width="stretch",
+                ):
+                    st.session_state[PROJECT_OVERVIEW_PREPARED_EXPORT_KEY] = "excel"
+            with export_col3:
+                if st.button(
+                    "Prepare PDF report",
+                    key="project_overview_prepare_pdf_export",
+                    width="stretch",
+                ):
+                    st.session_state[PROJECT_OVERVIEW_PREPARED_EXPORT_KEY] = "pdf"
+
+            prepared_export = st.session_state.get(PROJECT_OVERVIEW_PREPARED_EXPORT_KEY)
+            if prepared_export == "word":
                 st.download_button(
-                    "Word report",
-                    data=word_bytes,
+                    "Download Word report",
+                    data=_cached_word_report_bytes(
+                        "Project Overview Report",
+                        overview_subtitle,
+                        overview_summary_items,
+                        export_sections,
+                    ),
                     file_name="project_overview_report.docx",
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     key="project_overview_word_export",
                     width="stretch",
                 )
-            with export_col2:
+            elif prepared_export == "excel":
                 st.download_button(
-                    "Excel workbook",
-                    data=xlsx_bytes,
+                    "Download Excel workbook",
+                    data=_cached_frames_to_xlsx_bytes(workbook_sheets),
                     file_name="project_overview_report.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     key="project_overview_excel_export",
                     width="stretch",
                 )
-            with export_col3:
+            elif prepared_export == "pdf":
                 st.download_button(
-                    "PDF report",
-                    data=pdf_bytes,
+                    "Download PDF report",
+                    data=_cached_pdf_report_bytes(
+                        "Project Overview Report",
+                        overview_subtitle,
+                        overview_summary_items,
+                        export_sections,
+                    ),
                     file_name="project_overview_report.pdf",
                     mime="application/pdf",
                     key="project_overview_pdf_export",
                     width="stretch",
                 )
+            else:
+                st.caption("Prepare only the export you need. CSV files stay instant.")
 
             csv_col1, csv_col2 = st.columns(2)
             with csv_col1:
                 st.download_button(
                     "Projects CSV",
-                    data=_dataframe_to_csv_bytes(filtered_projects_df),
+                    data=_cached_dataframe_to_csv_bytes(filtered_projects_df),
                     file_name="project_directory.csv",
                     mime="text/csv",
                     key="project_overview_projects_csv_export",
@@ -664,7 +745,7 @@ def render_projects_page() -> None:
             with csv_col2:
                 st.download_button(
                     "Assignments CSV",
-                    data=_dataframe_to_csv_bytes(filtered_assignments_df),
+                    data=_cached_dataframe_to_csv_bytes(filtered_assignments_df),
                     file_name="project_assignments.csv",
                     mime="text/csv",
                     key="project_overview_assignments_csv_export",

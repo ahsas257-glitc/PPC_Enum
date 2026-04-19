@@ -27,7 +27,7 @@ PROFILE_CACHE_KEY = "search_reports_profile_cache"
 ACCOUNT_CACHE_KEY = "search_reports_account_cache"
 PROJECT_CACHE_KEY = "search_reports_project_cache"
 SESSION_CACHE_TTL_SECONDS = 300
-CARD_PREVIEW_HEIGHT = 455
+CARD_PREVIEW_HEIGHT = 370
 REPORT_SELECT_KEY = "search_reports_selected_report"
 REPORT_PREVIEW_ACTIVE_KEY = "search_reports_preview_active"
 REPORT_PREVIEW_HEIGHT = 860
@@ -1529,12 +1529,13 @@ def _build_flip_card_component(profile: dict[str, Any] | None, accounts: list[di
                 font-family: "Segoe UI", Arial, sans-serif;
                 background: transparent;
                 color: #f8fbff;
+                overflow: hidden;
             }}
             .wrap {{
-                min-height: 100vh;
+                min-height: 100svh;
                 display: grid;
                 place-items: center;
-                padding: 16px 8px 10px;
+                padding: 12px 8px 8px;
             }}
             .toggle {{
                 position: absolute;
@@ -1843,16 +1844,151 @@ def _build_flip_card_component(profile: dict[str, Any] | None, accounts: list[di
                 text-overflow: ellipsis;
             }}
             .hint {{
-                margin-top: 10px;
+                margin-top: 8px;
                 text-align: center;
                 color: rgba(224,239,255,0.7);
                 font-size: var(--micro-size);
                 font-weight: 700;
                 text-transform: uppercase;
             }}
+
+            @media (max-width: 520px) {{
+                :root {{
+                    --card-width: min(430px, calc(100vw - 14px));
+                    --card-padding: calc(var(--card-width) * 0.045);
+                    --eyebrow-size: clamp(6.2px, calc(var(--card-width) * 0.021), 8.4px);
+                    --micro-size: clamp(6.2px, calc(var(--card-width) * 0.022), 8.6px);
+                    --body-size: clamp(7.2px, calc(var(--card-width) * 0.026), 10.2px);
+                    --label-size: clamp(6px, calc(var(--card-width) * 0.020), 7.8px);
+                    --value-size: clamp(7.2px, calc(var(--card-width) * 0.025), 9.8px);
+                    --code-size: clamp(11.5px, calc(var(--card-width) * 0.038), 15.5px);
+                    --name-size: clamp(11px, calc(var(--card-width) * 0.040), 16px);
+                }}
+
+                .wrap {{
+                    align-content: start;
+                    padding: 6px 4px 4px;
+                }}
+
+                .face {{
+                    box-shadow: 0 10px 24px rgba(0,0,0,0.30);
+                }}
+
+                .face-content {{
+                    gap: calc(var(--card-width) * 0.016);
+                }}
+
+                .back .face-content {{
+                    gap: calc(var(--card-width) * 0.014);
+                }}
+
+                .surface-head {{
+                    gap: calc(var(--card-width) * 0.02);
+                }}
+
+                .status {{
+                    padding: 3px 5px;
+                }}
+
+                .front-body {{
+                    grid-template-columns: 29% 1fr;
+                    column-gap: calc(var(--card-width) * 0.034);
+                    row-gap: calc(var(--card-width) * 0.006);
+                    padding-bottom: 0;
+                }}
+
+                .photo {{
+                    width: 92%;
+                    height: calc(var(--card-width) * 0.255);
+                    margin-top: 0;
+                }}
+
+                .brand-row {{
+                    margin-top: 0;
+                }}
+
+                .ppc-logo,
+                .ppc-wordmark {{
+                    width: calc(var(--card-width) * 0.25);
+                    height: calc(var(--card-width) * 0.095);
+                }}
+
+                .info-stack {{
+                    gap: calc(var(--card-width) * 0.008);
+                }}
+
+                .surveyor-name,
+                .surveyor-sub,
+                .surveyor-code,
+                .info-line strong,
+                .detail-line strong,
+                .foot-text {{
+                    min-width: 0;
+                }}
+
+                .quick-grid {{
+                    row-gap: calc(var(--card-width) * 0.004);
+                    column-gap: calc(var(--card-width) * 0.028);
+                    margin-top: 0;
+                }}
+
+                .info-line {{
+                    grid-template-columns: minmax(34px, auto) minmax(0, 1fr);
+                    gap: 3px;
+                }}
+
+                .surface-foot {{
+                    gap: 4px;
+                    padding-top: calc(var(--card-width) * 0.014);
+                }}
+
+                .stripe {{
+                    height: calc(var(--card-width) * 0.086);
+                }}
+
+                .back-body {{
+                    column-gap: calc(var(--card-width) * 0.026);
+                    row-gap: calc(var(--card-width) * 0.006);
+                    align-content: start;
+                }}
+
+                .detail-line {{
+                    grid-template-columns: minmax(39px, auto) minmax(0, 1fr);
+                    gap: 4px;
+                    padding-bottom: calc(var(--card-width) * 0.004);
+                }}
+
+                .hint {{
+                    margin-top: 6px;
+                }}
+            }}
+
             @media (max-width: 340px) {{
                 :root {{
-                    --card-width: calc(100vw - 22px);
+                    --card-width: calc(100vw - 12px);
+                }}
+
+                .face-content {{
+                    gap: 4px;
+                }}
+
+                .front-body {{
+                    grid-template-columns: 28% 1fr;
+                    column-gap: 8px;
+                }}
+
+                .photo {{
+                    height: calc(var(--card-width) * 0.235);
+                }}
+
+                .quick-grid {{
+                    column-gap: 7px;
+                }}
+
+                .status {{
+                    max-width: 34%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }}
             }}
         </style>
@@ -2077,4 +2213,3 @@ def render_search_reports_page() -> None:
         _render_report_actions(selected_profile, accounts, project_assignments, actor)
     else:
         st.session_state[REPORT_PREVIEW_ACTIVE_KEY] = False
-

@@ -25,10 +25,110 @@ def inject_sidebar_hover_mode() -> None:
           const body = doc.body;
           if (!body) return;
 
+          const SIDEBAR_HOVER_VERSION = "2026-04-sidebar-v2";
           const desktopQuery = window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
+          const AUTO_CLOSE_MS = 90;
+          const EDGE_OPEN_PX = 34;
+          const closeSelectors = [
+            'button[title="Close sidebar"]',
+            'button[aria-label="Close sidebar"]',
+            '[data-testid="stSidebarCollapseButton"]'
+          ];
+
+          const sidebarElement = () => doc.querySelector('[data-testid="stSidebar"]');
+
+          const openAutoSidebar = () => {
+            if (!desktopQuery.matches) return;
+            body.classList.remove("sidebar-force-collapsed");
+            body.classList.remove("sidebar-auto-hidden");
+            body.classList.add("sidebar-auto-open");
+            window.clearTimeout(body.__sidebarAutoTimer);
+          };
+
+          const closeAutoSidebar = (blurActive = false) => {
+            const activeElement = doc.activeElement;
+            if (blurActive && activeElement && typeof activeElement.blur === "function") {
+              activeElement.blur();
+            }
+
+            body.classList.add("sidebar-force-collapsed");
+            body.classList.add("sidebar-auto-hidden");
+            body.classList.remove("sidebar-auto-open");
+            window.clearTimeout(body.__sidebarAutoTimer);
+          };
+
+          const sidebarHasFocus = () => {
+            const sidebar = sidebarElement();
+            const activeElement = doc.activeElement;
+            return Boolean(sidebar && activeElement && sidebar.contains(activeElement));
+          };
+
+          const scheduleAutoClose = (delay = AUTO_CLOSE_MS) => {
+            if (!desktopQuery.matches) return;
+            window.clearTimeout(body.__sidebarAutoTimer);
+            body.__sidebarAutoTimer = window.setTimeout(() => {
+              const sidebar = sidebarElement();
+              const isHovered = sidebar && sidebar.matches(":hover");
+              if (!sidebarHasFocus() && !isHovered) {
+                closeAutoSidebar();
+              }
+            }, delay);
+          };
+
+          const pointerInsideSidebar = (event) => {
+            const sidebar = sidebarElement();
+            if (!sidebar) return false;
+            if (sidebar.contains(event.target)) return true;
+            const rect = sidebar.getBoundingClientRect();
+            return (
+              event.clientX >= rect.left &&
+              event.clientX <= rect.right &&
+              event.clientY >= rect.top &&
+              event.clientY <= rect.bottom
+            );
+          };
+
+          const forceSidebarClosed = () => {
+            closeAutoSidebar(true);
+            window.clearTimeout(body.__sidebarForceTimer);
+            body.__sidebarForceTimer = window.setTimeout(() => {
+              if (!desktopQuery.matches) {
+                body.classList.remove("sidebar-force-collapsed");
+                body.classList.remove("sidebar-auto-hidden");
+                body.classList.remove("sidebar-auto-open");
+              }
+            }, 520);
+
+            if (!desktopQuery.matches) {
+              window.setTimeout(() => {
+                const closeButton = closeSelectors
+                  .map((selector) => doc.querySelector(selector))
+                  .find(Boolean);
+                if (closeButton) {
+                  closeButton.click();
+                }
+              }, 90);
+            }
+          };
+
+          const bindSidebarElement = () => {
+            const sidebar = sidebarElement();
+            if (!sidebar || sidebar.dataset.autoHoverBound === "true") return;
+            sidebar.dataset.autoHoverBound = "true";
+            sidebar.addEventListener("pointerenter", openAutoSidebar, { passive: true });
+            sidebar.addEventListener("mouseenter", openAutoSidebar, { passive: true });
+            sidebar.addEventListener("pointerleave", () => scheduleAutoClose(70), { passive: true });
+            sidebar.addEventListener("mouseleave", () => scheduleAutoClose(70), { passive: true });
+          };
+
           const syncMode = () => {
             body.classList.toggle("sidebar-hover-enabled", desktopQuery.matches);
-            if (!desktopQuery.matches) return;
+            if (!desktopQuery.matches) {
+              body.classList.remove("sidebar-force-collapsed");
+              body.classList.remove("sidebar-auto-hidden");
+              body.classList.remove("sidebar-auto-open");
+              return;
+            }
 
             const openButton =
               doc.querySelector('button[title="Open sidebar"]') ||
@@ -36,12 +136,72 @@ def inject_sidebar_hover_mode() -> None:
             if (openButton) {
               openButton.click();
             }
+            bindSidebarElement();
+            window.requestAnimationFrame(bindSidebarElement);
+            closeAutoSidebar();
           };
 
           syncMode();
-          if (!body.dataset.sidebarHoverBound) {
+          if (body.dataset.sidebarHoverBound !== SIDEBAR_HOVER_VERSION) {
+            if (body.__sidebarHoverObserver) {
+              body.__sidebarHoverObserver.disconnect();
+            }
             desktopQuery.addEventListener("change", syncMode);
-            body.dataset.sidebarHoverBound = "true";
+            doc.addEventListener("change", (event) => {
+              const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+              if (!sidebar || !sidebar.contains(event.target)) return;
+              const radio = event.target.closest?.('[data-testid="stRadio"]');
+              if (radio) {
+                forceSidebarClosed();
+              }
+            }, true);
+            doc.addEventListener("click", (event) => {
+              const sidebar = sidebarElement();
+              if (!sidebar || !sidebar.contains(event.target)) return;
+              const navLabel = event.target.closest?.('[data-testid="stRadio"] label');
+              if (navLabel) {
+                window.setTimeout(forceSidebarClosed, 120);
+              }
+            }, true);
+            doc.addEventListener("pointerenter", (event) => {
+              if (!desktopQuery.matches || !pointerInsideSidebar(event)) return;
+              openAutoSidebar();
+            }, true);
+            doc.addEventListener("pointermove", (event) => {
+              if (!desktopQuery.matches) return;
+              const sidebar = sidebarElement();
+              if (pointerInsideSidebar(event)) {
+                openAutoSidebar();
+                return;
+              }
+              if (event.clientX <= EDGE_OPEN_PX) {
+                openAutoSidebar();
+                return;
+              }
+              if (body.classList.contains("sidebar-auto-open") && sidebar) {
+                const rect = sidebar.getBoundingClientRect();
+                if (event.clientX > rect.right + 4 || event.clientY < rect.top || event.clientY > rect.bottom) {
+                  scheduleAutoClose(70);
+                }
+              }
+            }, { passive: true });
+            doc.addEventListener("pointerleave", (event) => {
+              if (!desktopQuery.matches || !pointerInsideSidebar(event)) return;
+              scheduleAutoClose(70);
+            }, true);
+            doc.addEventListener("focusin", (event) => {
+              const sidebar = sidebarElement();
+              if (!desktopQuery.matches || !sidebar || !sidebar.contains(event.target)) return;
+              openAutoSidebar();
+            }, true);
+            doc.addEventListener("keydown", (event) => {
+              if (event.key === "Escape") {
+                forceSidebarClosed();
+              }
+            }, true);
+            body.__sidebarHoverObserver = new MutationObserver(bindSidebarElement);
+            body.__sidebarHoverObserver.observe(body, { childList: true, subtree: true });
+            body.dataset.sidebarHoverBound = SIDEBAR_HOVER_VERSION;
           }
         })();
         </script>
@@ -142,8 +302,9 @@ def main() -> None:
         menu_items={"Get Help": None, "Report a bug": None, "About": None},
     )
     init_session_state()
-    start_database_keepalive()
     authenticated = bool(get_current_user())
+    if authenticated:
+        start_database_keepalive()
     inject_base_styles(authenticated=authenticated)
 
     if authenticated:

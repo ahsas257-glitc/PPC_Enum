@@ -19,23 +19,13 @@ class ProjectRepository:
                    p.status,
                    p.project_document_link,
                    p.created_at,
-                   COUNT(ps.project_surveyor_id) AS assignment_count
+                   COALESCE(ps_counts.assignment_count, 0) AS assignment_count
             FROM projects p
-            LEFT JOIN project_surveyors ps ON ps.project_id = p.project_id
-            GROUP BY
-                   p.project_id,
-                   p.project_code,
-                   p.project_name,
-                   p.project_short_name,
-                   p.phase_number,
-                   p.project_type,
-                   p.client_name,
-                   p.implementing_partner,
-                   p.start_date,
-                   p.end_date,
-                   p.status,
-                   p.project_document_link,
-                   p.created_at
+            LEFT JOIN (
+                SELECT project_id, COUNT(*)::int AS assignment_count
+                FROM project_surveyors
+                GROUP BY project_id
+            ) ps_counts ON ps_counts.project_id = p.project_id
             ORDER BY p.project_id DESC
             LIMIT %s
             """,

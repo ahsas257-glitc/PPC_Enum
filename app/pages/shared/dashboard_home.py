@@ -8,7 +8,6 @@ import pandas as pd
 import streamlit as st
 
 from app.core.session import get_current_user
-from app.design.components.tables import render_table
 from app.design.theme import LOGO_FILE
 from app.services.dashboard_service import DashboardService
 
@@ -48,6 +47,25 @@ def _format_compact_number(value: object) -> str:
 def _humanize_token(value: object) -> str:
     token = str(value or "").strip().replace("_", " ")
     return token.title() if token else "Unknown"
+
+
+def _format_date(value: object) -> str:
+    if value is None:
+        return "No date"
+    if isinstance(value, str) and not value.strip():
+        return "No date"
+    try:
+        if pd.isna(value):
+            return "No date"
+    except (TypeError, ValueError):
+        pass
+    try:
+        timestamp = pd.to_datetime(value)
+    except (TypeError, ValueError):
+        return str(value)
+    if pd.isna(timestamp):
+        return "No date"
+    return timestamp.strftime("%b %d, %Y")
 
 
 def _mix_frame(rows: list[dict], *, limit: int = 8) -> pd.DataFrame:
@@ -108,16 +126,16 @@ def _recent_surveyors_frame(rows: list[dict]) -> pd.DataFrame:
 def _scope_config(role: str) -> dict[str, str]:
     if role in _FULL_ACCESS_ROLES:
         return {
-            "title": "Executive operations command center",
-            "description": "Platform-wide oversight across users, projects, surveyors, payouts, and audit movement.",
+            "title": "Operations command center",
+            "description": "Users, projects, surveyors, payouts, and audit flow.",
             "badge": "Full control",
-            "mode": "Full visibility",
+            "mode": "Full view",
         }
     return {
         "title": "Field operations overview",
-        "description": "A focused workspace for project delivery, surveyor coverage, and live operational capacity.",
+        "description": "Projects, surveyor coverage, and live capacity.",
         "badge": "Summary mode",
-        "mode": "Scoped visibility",
+        "mode": "Scoped view",
     }
 
 
@@ -187,7 +205,7 @@ def _build_command_deck_html(metrics: dict[str, object], role: str) -> str:
             _metric_chip_markup("Projects", total_projects, "primary"),
             _metric_chip_markup("Surveyors", total_surveyors, "mint"),
             _metric_chip_markup("Assignments", current_assignments, "cool"),
-            _metric_chip_markup("Payout Channels", total_bank_accounts, "warm"),
+            _metric_chip_markup("Payouts", total_bank_accounts, "warm"),
         ]
     )
 
@@ -200,25 +218,25 @@ def _build_command_deck_html(metrics: dict[str, object], role: str) -> str:
             _health_rail_markup(
                 "Project live rate",
                 project_live_rate,
-                f"{active_projects:,} active projects out of {total_projects:,}",
+                f"{active_projects:,} active of {total_projects:,}",
                 "primary",
             ),
             _health_rail_markup(
-                "Surveyor payout coverage",
+                "Payout coverage",
                 payout_coverage,
-                f"{surveyors_with_accounts:,} surveyors linked to payout channels",
+                f"{surveyors_with_accounts:,} surveyors linked",
                 "mint",
             ),
             _health_rail_markup(
-                "Bank-first routing",
+                "Bank routing",
                 payout_mix_share,
-                f"{_safe_int(metrics.get('bank_account_channels')):,} bank channels across {total_bank_accounts:,} total records",
+                f"{_safe_int(metrics.get('bank_account_channels')):,} bank of {total_bank_accounts:,}",
                 "warm",
             ),
             _health_rail_markup(
-                "Account approval readiness",
+                "Approval readiness",
                 approval_rate,
-                f"{active_users:,} active users with {pending_users:,} pending approvals",
+                f"{active_users:,} active / {pending_users:,} pending",
                 "cool",
             ),
         ]
@@ -239,19 +257,19 @@ def _build_command_deck_html(metrics: dict[str, object], role: str) -> str:
             </div>
             <div class="dashboard-command-deck__glance">
                 <div>
-                    <span>Current assignments</span>
+                    <span>Assignments</span>
                     <strong>{escape(_format_compact_number(current_assignments))}</strong>
                 </div>
                 <div>
-                    <span>Active projects</span>
+                    <span>Active</span>
                     <strong>{escape(_format_compact_number(active_projects))}</strong>
                 </div>
                 <div>
-                    <span>Payout coverage</span>
+                    <span>Coverage</span>
                     <strong>{escape(str(payout_coverage))}%</strong>
                 </div>
                 <div>
-                    <span>Visibility mode</span>
+                    <span>Mode</span>
                     <strong>{escape(config['mode'])}</strong>
                 </div>
             </div>
@@ -330,6 +348,123 @@ def _build_spotlight_html(
         + _list_markup("Entity pressure", entity_mix)
         + f'<div class="dashboard-feed"><h4 title="Latest moves">Latest moves</h4>{feed_markup}</div>'
     )
+
+
+def _status_tone(value: object) -> str:
+    token = str(value or "").strip().lower().replace("_", "-")
+    if token in {"active", "approved", "complete", "completed"}:
+        return "active"
+    if token in {"planned", "pending", "draft"}:
+        return "pending"
+    if token in {"on-hold", "hold", "paused"}:
+        return "hold"
+    if token in {"closed", "inactive", "rejected"}:
+        return "closed"
+    return "neutral"
+
+
+def _build_project_stream_html(frame: pd.DataFrame) -> str:
+    if frame.empty:
+        return '<div class="dashboard-empty-state">Recent project records will appear here.</div>'
+
+    cards = []
+    for item in frame.head(5).to_dict(orient="records"):
+        project_name = str(item.get("project_name") or "Untitled project")
+        project_code = str(item.get("project_code") or "No code")
+        client = str(item.get("client_name") or "Unassigned client")
+        project_type = _humanize_token(item.get("project_type"))
+        status = _humanize_token(item.get("status"))
+        assignment_count = _format_compact_number(item.get("assignment_count"))
+        timeline = f"{_format_date(item.get('start_date'))} - {_format_date(item.get('end_date'))}"
+        cards.append(
+            f"""
+            <article class="dashboard-project-card">
+                <div class="dashboard-project-card__main">
+                    <span class="dashboard-code-pill">{escape(project_code)}</span>
+                    <strong title="{escape(project_name)}">{escape(project_name)}</strong>
+                    <small title="{escape(client)}">{escape(client)}</small>
+                </div>
+                <div class="dashboard-project-card__side">
+                    <span class="dashboard-status-pill dashboard-status-pill--{escape(_status_tone(item.get('status')))}">
+                        {escape(status)}
+                    </span>
+                    <div class="dashboard-project-card__meta">
+                        <span>{escape(assignment_count)} assignments</span>
+                        <span>{escape(project_type)}</span>
+                    </div>
+                </div>
+                <div class="dashboard-project-card__timeline">{escape(timeline)}</div>
+            </article>
+            """
+        )
+    return f'<div class="dashboard-project-stream">{"".join(cards)}</div>'
+
+
+def _build_surveyor_stream_html(frame: pd.DataFrame) -> str:
+    if frame.empty:
+        return '<div class="dashboard-empty-state">Recent surveyor records will appear here.</div>'
+
+    cards = []
+    for item in frame.head(6).to_dict(orient="records"):
+        surveyor_name = str(item.get("surveyor_name") or "Unnamed surveyor")
+        surveyor_code = str(item.get("surveyor_code") or "No code")
+        current_province = str(item.get("current_province_name") or "Province not set")
+        permanent_province = str(item.get("permanent_province_name") or "Permanent province not set")
+        document_count = min(max(_safe_int(item.get("document_count")), 0), 4)
+        account_count = _safe_int(item.get("account_count"))
+        document_percent = _percent(document_count, 4)
+        cards.append(
+            f"""
+            <article class="dashboard-surveyor-card">
+                <div class="dashboard-surveyor-card__top">
+                    <span class="dashboard-code-pill">{escape(surveyor_code)}</span>
+                    <strong title="{escape(surveyor_name)}">{escape(surveyor_name)}</strong>
+                </div>
+                <div class="dashboard-surveyor-card__place">
+                    <span title="{escape(current_province)}">{escape(current_province)}</span>
+                    <small title="{escape(permanent_province)}">{escape(permanent_province)}</small>
+                </div>
+                <div class="dashboard-surveyor-card__rail">
+                    <div class="dashboard-health-rail__track">
+                        <div class="dashboard-health-rail__fill" style="width:{document_percent}%"></div>
+                    </div>
+                    <span>{document_count}/4 docs</span>
+                </div>
+                <div class="dashboard-surveyor-card__foot">{escape(_format_compact_number(account_count))} payout channel(s)</div>
+            </article>
+            """
+        )
+    return f'<div class="dashboard-surveyor-grid">{"".join(cards)}</div>'
+
+
+def _build_audit_stream_html(rows: list[dict]) -> str:
+    if not rows:
+        return '<div class="dashboard-empty-state">No audit activity yet.</div>'
+
+    items = []
+    for item in rows[:7]:
+        action = _humanize_token(item.get("action"))
+        entity = _humanize_token(item.get("entity"))
+        actor = str(item.get("actor_name") or "System")
+        role = _humanize_token(item.get("actor_role"))
+        key = str(item.get("entity_key") or "No key")
+        created_at = _format_date(item.get("created_at"))
+        items.append(
+            f"""
+            <article class="dashboard-audit-row">
+                <div class="dashboard-audit-row__mark"></div>
+                <div class="dashboard-audit-row__copy">
+                    <strong title="{escape(action)}">{escape(action)}</strong>
+                    <span title="{escape(entity)}">{escape(entity)} / {escape(key)}</span>
+                </div>
+                <div class="dashboard-audit-row__actor">
+                    <span title="{escape(actor)}">{escape(actor)}</span>
+                    <small>{escape(role)} / {escape(created_at)}</small>
+                </div>
+            </article>
+            """
+        )
+    return f'<div class="dashboard-audit-stream">{"".join(items)}</div>'
 
 
 def _time_series_spec(frame: pd.DataFrame) -> dict:
@@ -418,7 +553,7 @@ def _time_series_spec(frame: pd.DataFrame) -> dict:
 
 def _distribution_spec(frame: pd.DataFrame, *, accent_color: str) -> dict:
     sorted_frame = frame.sort_values(["total", "label"], ascending=[True, False]).reset_index(drop=True)
-    chart_height = max(180, min(340, 42 * max(len(sorted_frame), 1)))
+    chart_height = 284
     return {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "width": "container",
@@ -502,23 +637,18 @@ def _render_chart_panel(
             st.vega_lite_chart(spec, width="stretch")
 
 
-def _render_table_panel(
+def _render_html_panel(
     *,
     key: str,
     title: str,
     meta: str,
     eyebrow: str,
-    frame: pd.DataFrame,
+    body_html: str,
     pills: list[str] | None = None,
-    empty_message: str = "No data available yet.",
-    max_visible_rows: int = 8,
 ) -> None:
     with st.container(key=key):
         st.html(_panel_header_html(title, meta, eyebrow=eyebrow, pills=pills))
-        if frame.empty:
-            st.info(empty_message)
-        else:
-            render_table(frame, max_visible_rows=max_visible_rows, row_height=38)
+        st.html(body_html)
 
 
 def render_dashboard_page() -> None:
@@ -549,8 +679,8 @@ def render_dashboard_page() -> None:
     with overview_left:
         _render_chart_panel(
             key="dashboard_panel_project_load",
-            title="Project deployment load",
-            meta="Active assignment concentration by project code.",
+            title="Project load",
+            meta="Active assignments by project.",
             eyebrow="Projects",
             frame=project_load_mix,
             spec=_distribution_spec(project_load_mix, accent_color="#6aa8ff") if not project_load_mix.empty else None,
@@ -563,8 +693,8 @@ def render_dashboard_page() -> None:
     with overview_right:
         _render_chart_panel(
             key="dashboard_panel_surveyor_coverage",
-            title="Surveyor geographic coverage",
-            meta="Current province distribution across the surveyor network.",
+            title="Surveyor coverage",
+            meta="Surveyors by province.",
             eyebrow="Surveyors",
             frame=surveyor_province_mix,
             spec=_distribution_spec(surveyor_province_mix, accent_color="#87f1e3") if not surveyor_province_mix.empty else None,
@@ -579,8 +709,8 @@ def render_dashboard_page() -> None:
     with portfolio_left:
         _render_chart_panel(
             key="dashboard_panel_client_mix",
-            title="Client portfolio concentration",
-            meta="Project portfolio split across client accounts.",
+            title="Client concentration",
+            meta="Projects by client.",
             eyebrow="Portfolio",
             frame=client_mix,
             spec=_distribution_spec(client_mix, accent_color="#79dcff") if not client_mix.empty else None,
@@ -590,8 +720,8 @@ def render_dashboard_page() -> None:
     with portfolio_right:
         _render_chart_panel(
             key="dashboard_panel_project_status",
-            title="Project lifecycle distribution",
-            meta="Current spread of project statuses across the workspace.",
+            title="Project lifecycle",
+            meta="Projects by status.",
             eyebrow="Status",
             frame=project_status_mix,
             spec=_distribution_spec(project_status_mix, accent_color="#5fb3ff") if not project_status_mix.empty else None,
@@ -601,26 +731,22 @@ def render_dashboard_page() -> None:
 
     project_table_col, surveyor_table_col = st.columns(2, gap="large")
     with project_table_col:
-        _render_table_panel(
+        _render_html_panel(
             key="dashboard_panel_recent_projects",
             title="Recent projects",
-            meta="Latest project records with client, status, and assignment volume.",
+            meta="Compact project stream.",
             eyebrow="Projects",
-            frame=recent_projects,
-            pills=[f"{len(recent_projects):,} rows loaded"],
-            empty_message="Recent project records will appear here.",
-            max_visible_rows=8,
+            body_html=_build_project_stream_html(recent_projects),
+            pills=[f"{len(recent_projects):,} latest records"],
         )
     with surveyor_table_col:
-        _render_table_panel(
+        _render_html_panel(
             key="dashboard_panel_recent_surveyors",
             title="Recent surveyors",
-            meta="Newest surveyor records with province, dossier readiness, and payout linkage.",
+            meta="Readiness and payout link.",
             eyebrow="Surveyors",
-            frame=recent_surveyors,
-            pills=[f"{len(recent_surveyors):,} rows loaded"],
-            empty_message="Recent surveyor records will appear here.",
-            max_visible_rows=8,
+            body_html=_build_surveyor_stream_html(recent_surveyors),
+            pills=[f"{len(recent_surveyors):,} latest records"],
         )
 
     if full_view:
@@ -629,7 +755,7 @@ def render_dashboard_page() -> None:
             _render_chart_panel(
                 key="dashboard_panel_audit_flow",
                 title="Audit activity timeline",
-                meta="Daily audit event flow across the last fourteen days.",
+                meta="Last 14 days.",
                 eyebrow="Audit",
                 frame=audit_trend,
                 spec=_time_series_spec(audit_trend) if not audit_trend.empty else None,
@@ -643,8 +769,8 @@ def render_dashboard_page() -> None:
             with st.container(key="dashboard_panel_system_health"):
                 st.html(
                     _panel_header_html(
-                        "Platform governance signals",
-                        "Super-admin health counters across approvals, payouts, and live workload.",
+                        "Governance signals",
+                        "Approvals, payouts, and workload.",
                         eyebrow="Governance",
                         pills=[
                             f"{_format_compact_number(metrics.get('pending_users'))} pending users",
@@ -658,8 +784,8 @@ def render_dashboard_page() -> None:
         with governance_mix_col:
             _render_chart_panel(
                 key="dashboard_panel_roles",
-                title="User access distribution",
-                meta="Role spread across all registered users in the system.",
+                title="Access mix",
+                meta="Users by role.",
                 eyebrow="Users",
                 frame=user_role_mix,
                 spec=_distribution_spec(user_role_mix, accent_color="#79dcff") if not user_role_mix.empty else None,
@@ -669,8 +795,8 @@ def render_dashboard_page() -> None:
         with payout_col:
             _render_chart_panel(
                 key="dashboard_panel_payouts",
-                title="Payout channel distribution",
-                meta="Split between bank account routing and mobile money routing.",
+                title="Payout mix",
+                meta="Bank vs mobile routing.",
                 eyebrow="Payout",
                 frame=payment_type_mix,
                 spec=_distribution_spec(payment_type_mix, accent_color="#87f1e3") if not payment_type_mix.empty else None,
@@ -682,7 +808,7 @@ def render_dashboard_page() -> None:
                 st.html(
                     _panel_header_html(
                         "Activity spotlight",
-                        "Most frequent audit actions, hottest entities, and latest named actors.",
+                        "Top actions, entities, and actors.",
                         eyebrow="Spotlight",
                         pills=[
                             f"{len(action_mix):,} top actions",
@@ -692,13 +818,11 @@ def render_dashboard_page() -> None:
                 )
                 st.html(_build_spotlight_html(action_mix, entity_mix, audit_rows))
 
-        _render_table_panel(
+        _render_html_panel(
             key="dashboard_panel_recent_activity",
-            title="Recent audit records",
-            meta="Latest actor, action, role, and entity combinations recorded in the audit trail.",
+            title="Recent audit",
+            meta="Latest system events.",
             eyebrow="Audit",
-            frame=pd.DataFrame(audit_rows)[["created_at", "actor_name", "actor_role", "action", "entity", "entity_key"]] if audit_rows else pd.DataFrame(),
-            pills=[f"{len(audit_rows):,} rows loaded"],
-            empty_message="No audit activity yet.",
-            max_visible_rows=10,
+            body_html=_build_audit_stream_html(audit_rows),
+            pills=[f"{len(audit_rows):,} latest events"],
         )

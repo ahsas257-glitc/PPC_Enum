@@ -3,7 +3,7 @@ import streamlit as st
 from app.core.database import fetch_one, get_connection
 
 
-DASHBOARD_CACHE_TTL_SECONDS = 60
+DASHBOARD_CACHE_TTL_SECONDS = 120
 _METRICS_QUERY = """
     SELECT
         (SELECT COUNT(*) FROM users) AS total_users,
@@ -74,7 +74,9 @@ class DashboardRepository:
                         dw.activity_day,
                         COALESCE(COUNT(a.audit_id), 0)::int AS total
                     FROM day_window dw
-                    LEFT JOIN audit_log a ON a.created_at::date = dw.activity_day
+                    LEFT JOIN audit_log a
+                      ON a.created_at >= dw.activity_day
+                     AND a.created_at < dw.activity_day + INTERVAL '1 day'
                     GROUP BY dw.activity_day
                     ORDER BY dw.activity_day
                     """
@@ -160,20 +162,27 @@ class DashboardRepository:
                         p.start_date,
                         p.end_date,
                         p.status,
-                        COUNT(ps.project_surveyor_id)::int AS assignment_count
-                    FROM projects p
-                    LEFT JOIN project_surveyors ps ON ps.project_id = p.project_id
-                    GROUP BY
-                        p.project_id,
-                        p.project_code,
-                        p.project_name,
-                        p.client_name,
-                        p.project_type,
-                        p.start_date,
-                        p.end_date,
-                        p.status
+                        COALESCE(assignments.assignment_count, 0) AS assignment_count
+                    FROM (
+                        SELECT
+                            project_id,
+                            project_code,
+                            project_name,
+                            client_name,
+                            project_type,
+                            start_date,
+                            end_date,
+                            status
+                        FROM projects
+                        ORDER BY project_id DESC
+                        LIMIT 8
+                    ) p
+                    LEFT JOIN LATERAL (
+                        SELECT COUNT(*)::int AS assignment_count
+                        FROM project_surveyors ps
+                        WHERE ps.project_id = p.project_id
+                    ) assignments ON true
                     ORDER BY p.project_id DESC
-                    LIMIT 8
                     """
                 )
                 recent_project_columns = [column[0] for column in cur.description]

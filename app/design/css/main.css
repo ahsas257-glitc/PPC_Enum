@@ -108,7 +108,7 @@ samp {
 
 [data-testid="stMainBlockContainer"] {
     --app-header-height: 3.2rem;
-    --app-page-zoom: 0.965;
+    --app-page-zoom: 1;
     position: relative;
     z-index: 1;
     min-height: calc(100vh - var(--app-header-height));
@@ -257,7 +257,7 @@ a:focus-visible {
 @media (max-width: 768px) {
     [data-testid="stMainBlockContainer"] {
         --app-header-height: 3rem;
-        --app-page-zoom: 0.985;
+        --app-page-zoom: 1;
         padding-bottom: 0.9rem !important;
     }
 
